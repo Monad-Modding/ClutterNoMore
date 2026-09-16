@@ -99,10 +99,15 @@ dependencies {
 
     implementation("folk.sisby:kaleido-config:${dep("kaleido")}")
     include("folk.sisby:kaleido-config:${dep("kaleido")}")
-    compileOnly("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
+    if (hasProperty("deps.jei")) {
+        compileOnly("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
+        localRuntime("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
+    } else {
+        compileOnly("mezz.jei:jei-26.2-fabric:30.2.0.15")
+    }
     implementation("cc.cassian.rrv:reliable-recipe-viewer-fabric:${dep("rrv")}")
 
-    implementation("dev.isxander:controlify:${property("deps.controlify")}") {
+    compileOnly("dev.isxander:controlify:${property("deps.controlify")}") {
         exclude(group = "maven.modrinth")
         exclude(group = "net.caffeinemc")
     }
@@ -114,7 +119,7 @@ dependencies {
     if (hasProperty("deps.mousetweaks")) {
         implementation("maven.modrinth:mouse-tweaks:${dep("mousetweaks")}")
     }
-    implementation("maven.modrinth:fractal-lib:${dep("fractal")}")
+    compileOnly("maven.modrinth:fractal-lib:${dep("fractal")}")
 }
 
 configurations.all {

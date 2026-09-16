@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.neoforge;
 //? if neoforge {
-/*import dev.tazer.clutternomore.ClutterNoMore;
+/*import com.mojang.blaze3d.platform.InputConstants;
+import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
 import dev.tazer.clutternomore.common.inventory.ShapeTooltip;
@@ -13,19 +14,18 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import org.lwjgl.glfw.GLFW;
 
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class NeoForgeClientEvents {
 
     public static final Lazy<KeyMapping> SHAPE_KEY = Lazy.of(() -> new KeyMapping(
             "key.clutternomore.change_block_shape",
-            GLFW.GLFW_KEY_LEFT_ALT,
+            InputConstants.KEY_LALT,
             //? if >1.21.8 {
-            KeyMapping.Category.INVENTORY
-            //?} else {
-            /^"key.categories.inventory"
-            ^///?}
+            /^KeyMapping.Category.INVENTORY
+            ^///?} else {
+            "key.categories.inventory"
+            //?}
     ));
 
     @SubscribeEvent
@@ -65,7 +65,7 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     public static void onScreenInput(ScreenEvent.KeyPressed.Pre event) {
-        ClutterNoMoreClient.onKeyPress(event.getScreen(), event.getKeyCode());
+        ClutterNoMoreClient.onKeyPress(event.getScreen(), event.getKey());
     }
 
     @SubscribeEvent
@@ -75,7 +75,7 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     public static void onScreenInput(ScreenEvent.KeyReleased.Pre event) {
-        ClutterNoMoreClient.onKeyReleased(event.getKeyCode());
+        ClutterNoMoreClient.onKeyReleased(event.getKey());
     }
 
     @SubscribeEvent

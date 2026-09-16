@@ -139,12 +139,7 @@ dependencies {
     }
 
     // JEI's API does not currently remap properly, so the full jar is used
-    if (hasProperty("deps.jei")) {
-        modCompileOnly("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
-        modLocalRuntime("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
-    } else {
-        modCompileOnly("mezz.jei:jei-1.21.10-fabric:26.2.0.27")
-    }
+    modCompileOnly("mezz.jei:jei-${mc}-fabric:${dep("jei")}")
 
     modImplementation("dev.isxander:controlify:${property("deps.controlify")}") {
         exclude(group = "maven.modrinth")

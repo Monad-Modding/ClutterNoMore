@@ -4,12 +4,15 @@ package dev.tazer.clutternomore.fabric.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.*;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
@@ -25,8 +28,15 @@ public class RecipeOverrideProvider extends FabricRecipeProvider {
         );
     }
 
+    //? if >26.2 {
+    /*@Override
+    protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        return new RecipeProvider(recipes, advancements) {
 
-    //? if >1.21.6 {
+            @Override
+            public void buildRecipes() {
+
+    *///?} else if >1.21.6 {
     @Override
     protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput output) {
         return new RecipeProvider(registryLookup, output) {

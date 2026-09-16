@@ -40,7 +40,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class VerticalSlabBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
-    //? if >1.20.1 {
+    //? if >1.20.1 && <26.3 {
     public static final MapCodec<? extends VerticalSlabBlock> CODEC = simpleCodec(VerticalSlabBlock::new);
     //?}
     public static final BooleanProperty DOUBLE = BooleanProperty.create("double");
@@ -52,7 +52,7 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
         registerDefaultState(stateDefinition.any().setValue(DOUBLE, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    //? if >1.20.1 {
+    //? if >1.20.1 && <26.3 {
     @Override
     protected MapCodec<? extends VerticalSlabBlock> codec() {
         return CODEC;

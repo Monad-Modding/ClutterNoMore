@@ -1,5 +1,7 @@
 package dev.tazer.clutternomore.common.recipe;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 //? if >=1.21 {
@@ -11,14 +13,16 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.tazer.clutternomore.common.mixin.recipe.RecipeManagerAccessor;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.*;
 //?}
 //? if >=26 {
 import net.minecraft.util.context.ContextMap;
-import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 //?}
@@ -32,13 +36,19 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 *///?}
+//? fabric && >26.2 {
+/*import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
+import dev.tazer.clutternomore.fabric.FabricRecipeMap;
+*///?}
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
 
 import java.util.*;
 
 public class RecipeRemover {
+
+    //? if >26.2 {
+    /*public static HolderLookup.Provider registries;
+    *///?}
 
     //? if >=1.21 {
     private record TagInfo(JsonArray expandedItems, Set<Item> shapes) {}
@@ -58,9 +68,15 @@ public class RecipeRemover {
 
         Map<String, TagInfo> tagCache = buildTagCache();
 
+        //? if >26.2 {
+        /*RegistryOps<JsonElement> ops = registries.createSerializationContext(JsonOps.INSTANCE);
+        *///?} else {
         RegistryOps<JsonElement> ops = accessor.cnm$getRegistries().createSerializationContext(JsonOps.INSTANCE);
+        //?}
+
 
         //? if >=26 {
+        //~ if >26.2 'new ContextMap.Builder().create'->'ContextMap.builder().buildAndValidate'
         ContextMap displayContext = new ContextMap.Builder().create(SlotDisplayContext.CONTEXT);
         RecipeMap currentMap = accessor.cnm$getRecipeMap();
         Iterable<RecipeHolder<?>> source = currentMap.values();
@@ -86,7 +102,12 @@ public class RecipeRemover {
                     continue;
                 }
 
-                DataResult<JsonElement> encodeResult = Recipe.CODEC.encodeStart(ops, recipe);
+                //? if >26.2 {
+                /*Holder<Recipe<?>> recipeDirect = new Holder.Direct<>(recipe, DataComponentMap.EMPTY);
+                *///?} else {
+				Recipe<?> recipeDirect = recipe;
+                //?}
+                var encodeResult = Recipe.CODEC.encodeStart(ops, recipeDirect);
                 Optional<JsonElement> encoded = encodeResult.result();
                 if (encoded.isEmpty()) {
                     if (encodeResult.error().isPresent()) {
@@ -127,9 +148,12 @@ public class RecipeRemover {
                 }
 
                 if (mutateRecipeJson(json, shapeToParentJson, tagCache)) {
-                    DataResult<Recipe<?>> decodeResult = Recipe.CODEC.parse(ops, json);
-                    Optional<Recipe<?>> decoded = decodeResult.result();
+                    var decodeResult = Recipe.CODEC.parse(ops, json);
+                    var decoded = decodeResult.result();
                     if (decoded.isPresent()) {
+                        //? if >26.2 {
+                        /*kept.add(new RecipeHolder<>(holder.id(), decoded.get().value()));
+                        *///?} else
                         kept.add(new RecipeHolder<>(holder.id(), decoded.get()));
                         continue;
                     }
@@ -147,11 +171,45 @@ public class RecipeRemover {
         }
 
         //? if >=26 {
-        accessor.cnm$setRecipeMap(RecipeMap.create(kept));
+        accessor.cnm$setRecipeMap(createRecipeMap(kept));
         //?} else {
         /*manager.replaceRecipes(kept);
         *///?}
     }
+
+    //? if >26 {
+    /// Creates a recipe map from a collection of recipes - 26.3 is a mess. Duplicates some recipe sync logic from Fabric API as they mixin `create` and not `<init>`.
+    public static RecipeMap createRecipeMap(List<RecipeHolder<?>> recipes) {
+        //? if >26.2 && fabric {
+        /*var map = new IdentityHashMap<RecipeSerializer<?>, List<RecipeHolder<?>>>();
+        ImmutableMultimap.Builder<RecipeType<?>, RecipeHolder<?>> byType = ImmutableMultimap.builder();
+        ImmutableMap.Builder<ResourceKey<Recipe<?>>, RecipeHolder<?>> byKey = ImmutableMap.builder();
+
+        for (RecipeHolder<?> recipe : recipes) {
+            byType.put(recipe.value().getType(), recipe);
+            byKey.put(recipe.id(), recipe);
+        }
+
+        for (RecipeSerializer<?> serializer : RecipeSyncImpl.getSyncedSerializers()) {
+            map.put(serializer, new ArrayList<>());
+        }
+
+        for (RecipeHolder<?> recipe : recipes) {
+            List<RecipeHolder<?>> list = map.get(recipe.value().getSerializer());
+
+            if (list != null) {
+                list.add(recipe);
+            }
+        }
+
+        return new FabricRecipeMap(byType.build(), byKey.build(), map);
+        *///?} else if neoforge && >26.2 {
+        /*return RecipeMap.createClient(recipes);
+         *///?} else {
+        return RecipeMap.create(recipes);
+        //?}
+    }
+    //?}
 
     private static Map<String, TagInfo> buildTagCache() {
         Map<String, TagInfo> result = new HashMap<>();

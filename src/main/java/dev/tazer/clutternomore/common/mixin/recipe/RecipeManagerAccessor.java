@@ -22,7 +22,7 @@ public interface RecipeManagerAccessor {
     void cnm$setRecipeMap(RecipeMap recipeMap);
     //?}
 
-    //? if >=1.21 {
+    //? if >=1.21 && <26.3 {
     @Accessor("registries")
     HolderLookup.Provider cnm$getRegistries();
     //?}

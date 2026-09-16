@@ -2,6 +2,7 @@ package dev.tazer.clutternomore.fabric;
 
 //? if fabric {
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
 import dev.tazer.clutternomore.common.inventory.ShapeTooltip;
@@ -12,14 +13,13 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 //?}
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import org.lwjgl.glfw.GLFW;
 
 
 public class FabricClientEvents {
 
     public static final KeyMapping SHAPE_KEY = new KeyMapping(
             "key.clutternomore.change_block_shape",
-            GLFW.GLFW_KEY_LEFT_ALT,
+            InputConstants.KEY_LALT,
             //? if >1.21.8 {
             KeyMapping.Category.INVENTORY
             //?} else {

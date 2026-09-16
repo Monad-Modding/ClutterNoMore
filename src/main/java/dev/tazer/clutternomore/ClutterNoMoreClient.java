@@ -1,5 +1,7 @@
 package dev.tazer.clutternomore;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import dev.tazer.clutternomore.client.ClientNetworking;
 import dev.tazer.clutternomore.client.ShapeSwitcherOptionsScreen;
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
@@ -39,6 +41,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.ChatFormatting;
+//? if <26.3
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -309,16 +312,28 @@ public class ClutterNoMoreClient {
     public static boolean isShapeKeyPhysicallyDown() {
         int code = shapeKey();
         if (code < 0) return false;
-        long window =
-                //? if >26 {
-                Minecraft.getInstance().getWindow().handle();
-                //?} else {
-                /*Minecraft.getInstance().getWindow().getWindow();
-                *///?}
-        if (code < GLFW.GLFW_KEY_SPACE) {
-            return GLFW.glfwGetMouseButton(window, code) == GLFW.GLFW_PRESS;
+        Window mcWindow = Minecraft.getInstance().getWindow();
+        var windowHandle =
+            //? if >26 {
+            mcWindow.handle();
+            //?} else {
+            /*mcWindow.getWindow();
+            *///?}
+        var window =
+            //? if >26 {
+            mcWindow;
+            //?} else {
+            /*mcWindow.getWindow();
+             *///?}
+        //? if <26.3 {
+        if (code < InputConstants.KEY_SPACE) {
+            return GLFW.glfwGetMouseButton(windowHandle, code) == GLFW.GLFW_PRESS;
         }
-        return GLFW.glfwGetKey(window, code) == GLFW.GLFW_PRESS;
+        //?}
+        return InputConstants.isKeyDown(
+                //? if <26.3
+                window,
+                code);
     }
 
     public static void onPlayerTick(Minecraft minecraft) {

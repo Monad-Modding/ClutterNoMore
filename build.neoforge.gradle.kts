@@ -159,10 +159,14 @@ dependencies {
         runtimeOnly("dev.emi:emi-neoforge:${dep("emi")}")
     }
 
-    // oops we're using jei internals
-    compileOnly("mezz.jei:jei-${mc}-neoforge:${dep("jei")}")
-    // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-${mc}-neoforge:${dep("jei")}")
+    if (hasProperty("deps.jei")) {
+        // oops we're using jei internals
+        compileOnly("mezz.jei:jei-${mc}-neoforge:${dep("jei")}")
+        // at runtime, use the full JEI jar for NeoForge
+        runtimeOnly("mezz.jei:jei-${mc}-neoforge:${dep("jei")}")
+    } else {
+        compileOnly("mezz.jei:jei-26.2-neoforge:30.2.0.15")
+    }
 
     implementation("folk.sisby:kaleido-config:${dep("kaleido")}")
     jarJar("folk.sisby:kaleido-config:${dep("kaleido")}")
@@ -187,7 +191,7 @@ dependencies {
         implementation("cc.cassian.rrv:reliable-recipe-viewer-neoforge:${dep("rrv")}")
     }
 
-    implementation("dev.isxander:controlify:${dep("controlify")}") {
+    compileOnly("dev.isxander:controlify:${dep("controlify")}") {
         isTransitive = false
         exclude(group = "maven.modrinth")
         exclude(group = "net.caffeinemc")
@@ -218,7 +222,7 @@ dependencies {
     if (hasProperty("deps.mousetweaks")) {
         implementation("maven.modrinth:mouse-tweaks:${dep("mousetweaks")}")
     }
-    implementation("maven.modrinth:fractal-lib:${dep("fractal")}")
+    compileOnly("maven.modrinth:fractal-lib:${dep("fractal")}")
 }
 
 tasks {

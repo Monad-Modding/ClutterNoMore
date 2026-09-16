@@ -27,6 +27,7 @@
     "pack.PackRepositoryMixin",
     "recipe.IngredientMixin",
     "recipe.RecipeManagerAccessor",
+    "recipe.RecipeManagerMixin",
     "recipe.ReloadableServerResourcesMixin",
     "recipe.SingleItemRecipeAccessor",
     "registry.BuiltInRegistriesMixin"

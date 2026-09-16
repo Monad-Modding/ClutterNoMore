@@ -32,7 +32,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class StepBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
-    //? if >1.20.1 {
+    //? if >1.20.1 && <26.3 {
     public static final MapCodec<? extends StepBlock> CODEC = simpleCodec(StepBlock::new);
     //?}
 
@@ -45,7 +45,7 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
         registerDefaultState(stateDefinition.any().setValue(SLAB_TYPE, SlabType.BOTTOM).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    //? if >1.20.1 {
+    //? if >1.20.1 && <26.3 {
     @Override
     protected MapCodec<? extends StepBlock> codec() {
         return CODEC;

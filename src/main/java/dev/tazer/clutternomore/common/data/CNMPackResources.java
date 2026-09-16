@@ -31,18 +31,21 @@ import java.io.StringWriter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+//~ if >26.2 'extends AbstractPackResources'->'implements PackResources'
 public class CNMPackResources extends AbstractPackResources {
     protected final Map<Identifier, byte[]> clientResources;
     protected final Map<Identifier, byte[]> serverData;
     protected final Map<String, byte[]> rootResources;
     protected final PackMetadataSection clientMetadata;
     protected final PackMetadataSection serverMetadata;
+    private final PackLocationInfo info;
 
     private static final WorldVersion currentVersion = SharedConstants.getCurrentVersion();
 
     //? if >1.21.9 {
     public static final InclusiveRange<PackFormat> resourcePackVersion = currentVersion.packVersion(PackType.CLIENT_RESOURCES).minorRange();
     public static final InclusiveRange<PackFormat> dataPackVersion = currentVersion.packVersion(PackType.SERVER_DATA).minorRange();
+
     //?} else {
     /*public static final int resourcePackVersion = currentVersion.getPackVersion(PackType.CLIENT_RESOURCES);
     public static final int dataPackVersion = currentVersion.getPackVersion(PackType.SERVER_DATA);
@@ -56,11 +59,14 @@ public class CNMPackResources extends AbstractPackResources {
             *///?}
              info
     ) {
+        //? if <26.3 {
         super(info
         //? if <1.21 {
             /*, true
         *///?}
         );
+        //?}
+        this.info = info;
         this.clientResources = new ConcurrentHashMap<>();
         this.serverData = new ConcurrentHashMap<>();
         this.rootResources = new ConcurrentHashMap<>();
@@ -112,6 +118,10 @@ public class CNMPackResources extends AbstractPackResources {
         } catch (IOException e) {
             ClutterNoMore.LOGGER.error("Failed to write JSON {} to resource pack.", path, e);
         }
+    }
+
+    public PackLocationInfo location() {
+        return info;
     }
 
     public @Nullable IoSupplier<InputStream> getRootResource(String... strings) {
