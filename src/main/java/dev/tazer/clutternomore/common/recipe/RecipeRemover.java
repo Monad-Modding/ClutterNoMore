@@ -1,7 +1,5 @@
 package dev.tazer.clutternomore.common.recipe;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 //? if >=1.21 {
@@ -9,37 +7,35 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.tazer.clutternomore.common.mixin.recipe.RecipeManagerAccessor;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.*;
 //?}
 //? if >=26 {
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.resources.ResourceKey;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 //?}
 //? if <1.21 {
 /*import dev.tazer.clutternomore.common.mixin.recipe.SingleItemRecipeAccessor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
-import net.minecraft.world.item.crafting.SingleItemRecipe;
 *///?}
 //? fabric && >26.2 {
 /*import net.fabricmc.fabric.impl.recipe.sync.RecipeSyncImpl;
 import dev.tazer.clutternomore.fabric.FabricRecipeMap;
 *///?}
+
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.Item;
 
 import java.util.*;

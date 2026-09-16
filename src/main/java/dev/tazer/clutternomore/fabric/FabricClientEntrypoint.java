@@ -26,21 +26,11 @@ public class FabricClientEntrypoint implements ClientModInitializer {
     public void onInitializeClient() {
         ClutterNoMoreClient.init();
 
-        net.fabricmc.fabric.api.client.
-        //? if >26 {
-        keymapping.v1.KeyMappingHelper.registerKeyMapping
-        //?} else {
-        /*keybinding.v1.KeyBindingHelper.registerKeyBinding
-         *///?}
-        (SHAPE_KEY);
+        //~ if >26 'keybinding.v1.KeyBindingHelper.registerKeyBinding'-> 'keymapping.v1.KeyMappingHelper.registerKeyMapping'
+        net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper.registerKeyMapping(SHAPE_KEY);
 
-        net.fabricmc.fabric.api.client.rendering.v1
-        //? if >26 {
-        .ClientTooltipComponentCallback
-        //?} else {
-        /*.TooltipComponentCallback
-        *///?}
-        .EVENT.register(FabricClientEvents::registerTooltipComponent);
+        //~ if >26 'TooltipComponentCallback' -> 'ClientTooltipComponentCallback'
+        net.fabricmc.fabric.api.client.rendering.v1.ClientTooltipComponentCallback.EVENT.register(FabricClientEvents::registerTooltipComponent);
 
         ItemTooltipCallback.EVENT.register(ClutterNoMoreClient::onItemTooltips);
 

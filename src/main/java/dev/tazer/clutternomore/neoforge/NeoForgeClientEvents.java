@@ -22,10 +22,10 @@ public class NeoForgeClientEvents {
             "key.clutternomore.change_block_shape",
             InputConstants.KEY_LALT,
             //? if >1.21.8 {
-            /^KeyMapping.Category.INVENTORY
-            ^///?} else {
-            "key.categories.inventory"
-            //?}
+            KeyMapping.Category.INVENTORY
+            //?} else {
+            /^"key.categories.inventory"
+            ^///?}
     ));
 
     @SubscribeEvent
@@ -65,7 +65,8 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     public static void onScreenInput(ScreenEvent.KeyPressed.Pre event) {
-        ClutterNoMoreClient.onKeyPress(event.getScreen(), event.getKey());
+        //~ if >26.2 'getKeyCode'->'getKey'
+        ClutterNoMoreClient.onKeyPress(event.getScreen(), event.getKeyCode());
     }
 
     @SubscribeEvent
@@ -75,7 +76,8 @@ public class NeoForgeClientEvents {
 
     @SubscribeEvent
     public static void onScreenInput(ScreenEvent.KeyReleased.Pre event) {
-        ClutterNoMoreClient.onKeyReleased(event.getKey());
+        //~ if >26.2 'getKeyCode'->'getKey'
+        ClutterNoMoreClient.onKeyReleased(event.getKeyCode());
     }
 
     @SubscribeEvent

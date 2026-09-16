@@ -38,7 +38,8 @@ public class CNMPackResources extends AbstractPackResources {
     protected final Map<String, byte[]> rootResources;
     protected final PackMetadataSection clientMetadata;
     protected final PackMetadataSection serverMetadata;
-    private final PackLocationInfo info;
+    //? if >26.2
+    //private final PackLocationInfo info;
 
     private static final WorldVersion currentVersion = SharedConstants.getCurrentVersion();
 
@@ -66,7 +67,8 @@ public class CNMPackResources extends AbstractPackResources {
         *///?}
         );
         //?}
-        this.info = info;
+        //? if >26.2
+        //this.info = info;
         this.clientResources = new ConcurrentHashMap<>();
         this.serverData = new ConcurrentHashMap<>();
         this.rootResources = new ConcurrentHashMap<>();
@@ -120,9 +122,11 @@ public class CNMPackResources extends AbstractPackResources {
         }
     }
 
-    public PackLocationInfo location() {
+    //? if >26.2 {
+    /*public PackLocationInfo location() {
         return info;
     }
+    *///?}
 
     public @Nullable IoSupplier<InputStream> getRootResource(String... strings) {
         byte[] resource = rootResources.get(String.join("/", strings));

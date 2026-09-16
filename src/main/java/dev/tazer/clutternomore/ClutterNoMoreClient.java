@@ -123,12 +123,8 @@ public class ClutterNoMoreClient {
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
     }
 
-    public static void onItemTooltips(ItemStack stack,
-                                      //? if >1.21 {
-                                      Item.TooltipContext
-                                              //?} else
-                                              //Object
-                                              tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
+    //~ if >1.21 'Object'->'Item.TooltipContext'
+    public static void onItemTooltips(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
         if (!ShapeMap.contains(stack.getItem())) return;
         if (tooltip.isEmpty()) return;
 
@@ -230,12 +226,8 @@ public class ClutterNoMoreClient {
     }
 
     public static int selectedSlot(Player player) {
-        return player.getInventory()
-                //? if >1.21.2 {
-                .getSelectedSlot();
-                //?} else {
-                /*.selected;
-                *///?}
+        //~ if >1.21.2 '.selected'->'.getSelectedSlot()'
+        return player.getInventory().getSelectedSlot();
     }
 
     public static void renderOverlay(GuiGraphicsExtractor guiGraphics, float partialTick) {
