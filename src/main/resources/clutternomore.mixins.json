@@ -18,6 +18,7 @@
     "compat.jei.SimpleJEIRenderMixin",
     "creative.CreativeModeTabEntriesMixin",
     "creative.DefaultStackEntryCollectorMixin",
+    "creative.EventHooksMixin",
     "creative.FabricItemGroupEntriesMixin",
     "creative.ItemDisplayBuilderMixin",
     "dev.ShapedRecipeBuilderMixin",
