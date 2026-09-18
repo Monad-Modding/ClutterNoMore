@@ -367,17 +367,28 @@ public class ClutterNoMoreClient {
         if (!ShapeMap.contains(heldStack.getItem())) return true;
         if (!isCreativeTabSlot(slot) && !slot.allowModification(Minecraft.getInstance().player)) return true;
 
-        switchShape(slot, screen.getMenu().containerId, heldStack, (int) scrollY, CLIENT_CONFIG.WRAP_SCROLLING.value());
+        switchShape(slot, screen.getMenu().containerId, heldStack, getDirection(scrollY), CLIENT_CONFIG.WRAP_SCROLLING.value());
         return false;
     }
 
     public static boolean onMouseScrolling(double yOffset) {
-        int direction = (int) yOffset;
+        int direction = getDirection(yOffset);
         if (OVERLAY != null) {
             OVERLAY.onMouseScrolled(direction);
             return true;
         }
         return false;
+    }
+
+    /// Normalize direction - 26.3 and above can produce scroll values less than 1.
+    private static int getDirection(double yOffset) {
+        //? if >26.2 {
+        if (yOffset > 0 && yOffset < 1)
+            return 1;
+        else if (yOffset < 0 && yOffset > -1)
+            return -1;
+        //?}
+        return (int) yOffset;
     }
 
     public static boolean changeHotbarSlot(int selectedIndex) {
