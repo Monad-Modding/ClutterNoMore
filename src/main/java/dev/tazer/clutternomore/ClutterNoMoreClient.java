@@ -380,14 +380,11 @@ public class ClutterNoMoreClient {
         return false;
     }
 
-    /// Normalize direction - 26.3 and above can produce scroll values less than 1.
     private static int getDirection(double yOffset) {
-        //? if >26.2 {
         if (yOffset > 0 && yOffset < 1)
             return 1;
         else if (yOffset < 0 && yOffset > -1)
             return -1;
-        //?}
         return (int) yOffset;
     }
 
