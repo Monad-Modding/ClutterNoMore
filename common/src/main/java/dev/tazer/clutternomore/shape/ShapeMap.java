@@ -21,7 +21,9 @@ import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -162,13 +164,11 @@ public final class ShapeMap {
             if (parent == null || !members.contains(parent)) {
                 parent = lexicographicallyFirst(members);
             }
-            List<Item> shapes = new ArrayList<>();
-            shapes.add(parent);
-            for (Item member : members) {
+            List<Item> shapes = order(parent, members, groupMappings);
+            for (Item member : shapes) {
                 if (member == parent) {
                     continue;
                 }
-                shapes.add(member);
                 parentByShape.put(member, parent);
                 //? if >=26 {
                 /*if (Services.PLATFORM.isModLoaded("rrv") && Services.PLATFORM.isClient()) {
@@ -190,13 +190,52 @@ public final class ShapeMap {
 
     @Nullable
     private static Item pickParent(List<Mapping> mappings) {
-        Mapping best = null;
+        Set<Item> shapes = new HashSet<>();
         for (Mapping mapping : mappings) {
-            if (best == null || mapping.priority() > best.priority() || mapping.priority() == best.priority() && mapping.source().compareTo(best.source()) < 0) {
+            shapes.add(mapping.shape());
+        }
+        Mapping best = null;
+        Mapping bestRoot = null;
+        for (Mapping mapping : mappings) {
+            if (outranks(mapping, best)) {
                 best = mapping;
             }
+            if (!shapes.contains(mapping.parent()) && outranks(mapping, bestRoot)) {
+                bestRoot = mapping;
+            }
         }
-        return best == null ? null : best.parent();
+        Mapping chosen = bestRoot != null ? bestRoot : best;
+        return chosen == null ? null : chosen.parent();
+    }
+
+    private static boolean outranks(Mapping mapping, @Nullable Mapping best) {
+        return best == null || mapping.priority() > best.priority() || mapping.priority() == best.priority() && mapping.source().compareTo(best.source()) < 0;
+    }
+
+    private static List<Item> order(Item parent, List<Item> members, List<Mapping> mappings) {
+        List<Mapping> ranked = new ArrayList<>(mappings);
+        ranked.sort(Comparator.comparingInt(Mapping::priority).reversed());
+        Map<Item, List<Item>> children = new HashMap<>();
+        for (Mapping mapping : ranked) {
+            children.computeIfAbsent(mapping.parent(), key -> new ArrayList<>()).add(mapping.shape());
+        }
+        List<Item> ordered = new ArrayList<>(members.size());
+        Set<Item> seen = new HashSet<>();
+        ordered.add(parent);
+        seen.add(parent);
+        for (int i = 0; i < ordered.size(); i++) {
+            for (Item child : children.getOrDefault(ordered.get(i), List.of())) {
+                if (seen.add(child)) {
+                    ordered.add(child);
+                }
+            }
+        }
+        for (Item member : members) {
+            if (seen.add(member)) {
+                ordered.add(member);
+            }
+        }
+        return ordered;
     }
 
     private static Item lexicographicallyFirst(List<Item> items) {

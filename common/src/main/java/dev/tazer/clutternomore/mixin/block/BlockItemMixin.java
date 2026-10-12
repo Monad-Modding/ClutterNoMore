@@ -3,20 +3,16 @@ package dev.tazer.clutternomore.mixin.block;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.tazer.clutternomore.block.VerticalSlabBlock;
+import dev.tazer.clutternomore.shape.ShapeHooks;
 import dev.tazer.clutternomore.shape.ShapeMap;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SlabType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 //? if >=1.20.5 {
 import net.minecraft.world.entity.LivingEntity;
 //?}
-
-import java.util.Optional;
 
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
@@ -38,16 +34,6 @@ public class BlockItemMixin {
     *///?}
 
     private static boolean cnm$consumes(ItemStack stack, BlockState placed) {
-        if (!ShapeMap.isShape(stack.getItem())) return true;
-        Optional<SlabType> slab = placed.getOptionalValue(SlabBlock.TYPE);
-        Optional<Boolean> isDouble = placed.getOptionalValue(VerticalSlabBlock.DOUBLE);
-        boolean consume = true;
-        if (slab.isPresent()) {
-            consume = slab.get() != SlabType.DOUBLE;
-        }
-        if (isDouble.isPresent()) {
-            consume = !isDouble.get();
-        }
-        return consume;
+        return !ShapeMap.isShape(stack.getItem()) || !ShapeHooks.isDoubled(placed);
     }
 }

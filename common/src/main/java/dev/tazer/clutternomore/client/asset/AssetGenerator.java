@@ -28,6 +28,7 @@ import java.util.Set;
 public final class AssetGenerator {
 
     private static final List<String> LOWERCASE_WORDS = List.of("of", "and", "with");
+    private static final List<String> TOP_FALLBACKS = List.of("side", "bottom", "all", "texture", "particle");
 
     private AssetGenerator() {
     }
@@ -132,12 +133,11 @@ public final class AssetGenerator {
             return textures;
         }
         if (textures.get("top") == null) {
-            if (textures.get("side") != null) {
-                textures.add("top", textures.get("side"));
-            } else if (textures.get("bottom") != null) {
-                textures.add("top", textures.get("bottom"));
-            } else if (textures.get("all") != null) {
-                textures.add("top", textures.get("all"));
+            for (String fallback : TOP_FALLBACKS) {
+                if (textures.get(fallback) != null) {
+                    textures.add("top", textures.get(fallback));
+                    break;
+                }
             }
         }
         if (textures.get("side") == null) {

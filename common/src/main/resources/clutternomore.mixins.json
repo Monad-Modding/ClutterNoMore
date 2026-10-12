@@ -14,6 +14,7 @@
     "item.DataComponentInitializersMixin",
     "item.DataComponentMapBuilderAccessor",
     "item.ItemMixin",
+    "item.ItemStackLinkedSetMixin",
     "item.ItemStackMixin",
     "pack.MultiPackResourceManagerMixin",
     "recipe.IngredientMixin",

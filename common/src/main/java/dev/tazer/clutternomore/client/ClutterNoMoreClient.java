@@ -61,6 +61,7 @@ public final class ClutterNoMoreClient {
     private static boolean showTooltip;
     private static boolean keyHeld;
     private static long lastSend;
+    private static double scrollProgress;
 
     @Nullable
     private static ShapeSwitcherOverlay overlay;
@@ -275,8 +276,21 @@ public final class ClutterNoMoreClient {
     }
     //?}
 
+    public static boolean selectHoveredShape(int index) {
+        if (!showTooltip || !(Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> screen)) return false;
+        Slot slot = ((AbstractContainerScreenAccessor) screen).cnm$getHoveredSlot();
+        if (slot == null || !canSwitch(slot)) return false;
+        if (index < ShapeMap.getShapes(slot.getItem().getItem()).size()) {
+            switchShapeTo(slot, screen.getMenu().containerId, slot.getItem(), index);
+        }
+        return true;
+    }
+
     public static void switchShape(Slot slot, int containerId, ItemStack stack, int direction, boolean wrap) {
-        int next = nextShapeIndex(stack, direction, wrap);
+        switchShapeTo(slot, containerId, stack, nextShapeIndex(stack, direction, wrap));
+    }
+
+    private static void switchShapeTo(Slot slot, int containerId, ItemStack stack, int next) {
         if (next < 0 || next == ShapeMap.getShapeIndex(stack)) return;
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
@@ -393,11 +407,13 @@ public final class ClutterNoMoreClient {
     }
 
     private static int direction(double scroll) {
-        //? if >=26.3 {
-        /*if (scroll > 0 && scroll < 1) return 1;
-        if (scroll < 0 && scroll > -1) return -1;
-        *///?}
-        return (int) scroll;
+        if (scrollProgress != 0 && Math.signum(scroll) != Math.signum(scrollProgress)) {
+            scrollProgress = 0;
+        }
+        scrollProgress += scroll;
+        int steps = (int) scrollProgress;
+        scrollProgress -= steps;
+        return Integer.signum(steps);
     }
 
     public static boolean changeHotbarSlot(int index) {

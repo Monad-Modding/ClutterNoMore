@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,7 +143,9 @@ public final class ShapeBlocks {
         if (!config.verticalSlabs.value() && !config.steps.value()) return;
         Map<String, Function<BlockBehaviour.Properties, Block>> pending = new LinkedHashMap<>();
         Map<String, BlockItem> parents = new LinkedHashMap<>();
-        for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
+        List<Map.Entry<ResourceKey<Item>, Item>> items = new ArrayList<>(BuiltInRegistries.ITEM.entrySet());
+        items.sort(Comparator.comparing(entry -> entry.getKey().location()));
+        for (Map.Entry<ResourceKey<Item>, Item> entry : items) {
             if (!(entry.getValue() instanceof BlockItem blockItem)) {
                 continue;
             }
