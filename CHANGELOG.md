@@ -1,7 +1,6 @@
-- Add Thatch compat (thanks @evanbones!)
-- Fixed crash with RRV on multiplayer servers.
-- Fixed Wilder Wild hollowed stems not being detected.
-- Fixed compatibility issue with Enchancement caused by mixins not chaining.
-- Fixed `/reload` breaking some functionality.
-- Fixed lang overrides not being respected in some cases.
-- Added some config options to revert the loot table and recipe changes by the mod.
+- Refactored project to get all versions consistent in features
+- Added copper oxidization support for vertical slabs and steps
+- Added glass rendering support for vertical slabs and steps
+- Fixed various issues with /reload
+- Fixed the recipe fixes config option
+- Fixed vertical slabs and steps not inheriting many properties from their parent blocks

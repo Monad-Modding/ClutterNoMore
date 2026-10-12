@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": ["${authors}"],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/clutter-no-more",
+    "sources": "https://github.com/Alchemists-Of-Yore/ClutterNoMore",
+    "issues": "https://github.com/Alchemists-Of-Yore/ClutterNoMore/issues"
+  },
+  "license": "${license}",
+  "icon": "logo.png",
+  "environment": "*",
+  "mixins": ["clutternomore.mixins.json", "clutternomore.fabric.mixins.json"],
+  "accessWidener": "clutternomore.accesswidener",
+  "entrypoints": {
+    "main": ["dev.tazer.clutternomore.fabric.ClutterNoMoreFabric"],
+    "client": ["dev.tazer.clutternomore.fabric.client.ClutterNoMoreFabricClient"],
+    "fabric-datagen": ["dev.tazer.clutternomore.fabric.data.ClutterNoMoreDataGenerator"],
+    "modmenu": ["dev.tazer.clutternomore.fabric.client.ModMenuCompat"],
+    "emi": ["dev.tazer.clutternomore.compat.EmiCompat"],
+    "jei_mod_plugin": ["dev.tazer.clutternomore.compat.JeiCompat"],
+    "controlify": ["dev.tazer.clutternomore.fabric.client.FabricControlifyEntrypoint"]
+  },
+  "depends": {
+    "fabricloader": ">=${fabric_loader}",
+    "fabric-api": "*",
+    "minecraft": "${fabric_minecraft}",
+    "java": ">=${java}"
+  },
+  "breaks": {
+    "rrv": "<8.2.0"
+  }
+}

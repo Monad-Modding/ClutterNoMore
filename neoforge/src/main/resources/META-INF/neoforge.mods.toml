@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "${neoforge_loader}"
+license = "${license}"
+issueTrackerURL = "https://github.com/Alchemists-Of-Yore/ClutterNoMore/issues"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+displayURL = "https://modrinth.com/mod/clutter-no-more"
+logoFile = "logo.png"
+authors = "${authors}"
+description = '''${description}'''
+
+[[mixins]]
+config = "${id}.mixins.json"
+
+[[mixins]]
+config = "${id}.neoforge.mixins.json"
+
+[[dependencies.${id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "${neoforge_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${neoforge_minecraft}"
+ordering = "NONE"
+side = "BOTH"

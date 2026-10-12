@@ -1,36 +1,37 @@
 pluginManagement {
     repositories {
-        mavenLocal()
-        mavenCentral()
         gradlePluginPortal()
+        mavenCentral()
         maven("https://maven.fabricmc.net/") { name = "Fabric" }
         maven("https://maven.neoforged.net/releases/") { name = "NeoForged" }
-        maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
-        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
-        maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
+        maven("https://maven.kikugie.dev/releases") { name = "KikuGie" }
     }
 }
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    id("dev.kikugie.stonecutter") version "0.9"
+    id("dev.kikugie.stonecutter") version "0.9.8"
 }
 
 stonecutter {
     create(rootProject) {
-        fun match(version: String, vararg loaders: String) = loaders
-            .forEach {
-                if (it == "fabric" && stonecutter.eval(version, ">1.21.11"))
-                    version("$version-$it", version).buildscript = "build.fabric_noremap.gradle.kts"
-                else
-                    version("$version-$it", version).buildscript = "build.$it.gradle.kts"
-            }
-        match("1.20.1", "forge")
-        match("1.21.1", "fabric", "neoforge")
-        match("26.1.2", "fabric", "neoforge")
-        match("26.2", "fabric", "neoforge")
-        match("26.3", "fabric", "neoforge")
+        vcsVersion = "1.21.1"
 
-        vcsVersion = "1.21.1-neoforge"
+        branch("common") {
+            versions("1.20.1", "1.21.1").buildscript("build.obfuscated.gradle.kts")
+            versions("26.1.2", "26.2", "26.3")
+        }
+        branch("fabric") {
+            versions("1.20.1", "1.21.1").buildscript("build.obfuscated.gradle.kts")
+            versions("26.1.2", "26.2", "26.3")
+        }
+        branch("neoforge") {
+            versions("1.21.1", "26.1.2", "26.2", "26.3")
+        }
+        branch("forge") {
+            versions("1.20.1")
+        }
     }
 }
+
+rootProject.name = "ClutterNoMore"

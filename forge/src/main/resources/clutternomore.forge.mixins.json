@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.tazer.clutternomore.forge.mixin",
+  "plugin": "${mixin_plugin}",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BuildCreativeModeTabContentsEventMixin",
+    "FabricItemGroupEntriesMixin",
+    "HoneycombItemMixin",
+    "compat.create.ItemRequirementMixin",
+    "compat.create.MaterialChecklistMixin",
+    "compat.create.StackRequirementMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

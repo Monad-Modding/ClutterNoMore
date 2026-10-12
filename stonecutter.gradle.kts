@@ -1,24 +1,19 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("net.fabricmc.fabric-loom") version "1.16-SNAPSHOT" apply false
-    id("net.neoforged.moddev") version "2.0.147" apply false
-    id ("dev.kikugie.postprocess.jsonlang") version "2.1-beta.4" apply false
-    id("me.modmuss50.mod-publish-plugin") version "1.1.0" apply false
+    alias(libs.plugins.fabric.loom) apply false
+    alias(libs.plugins.fabric.loom.remap) apply false
+    alias(libs.plugins.moddev) apply false
+    alias(libs.plugins.moddev.legacyforge) apply false
 }
 
-stonecutter active "26.1.2-fabric"
-
-stonecutter parameters {
-    constants.match(node.metadata.project.substringAfterLast('-'), "fabric", "neoforge", "forge")
-    filters.include("**/*.fsh", "**/*.vsh")
-}
+stonecutter active "1.21.1"
 
 stonecutter tasks {
-    order("publishModrinth")
-    order("publishCurseforge")
+    order("publishModrinth") { branch.id != "common" }
+    order("publishCurseforge") { branch.id != "common" }
 }
 
 for (version in stonecutter.versions.map { it.version }.distinct()) tasks.register("publish$version") {
     group = "publishing"
-    dependsOn(stonecutter.tasks.named("publishMods") { metadata.version == version })
+    dependsOn(stonecutter.tasks.named("publishMods") { metadata.version == version && branch.id != "common" })
 }

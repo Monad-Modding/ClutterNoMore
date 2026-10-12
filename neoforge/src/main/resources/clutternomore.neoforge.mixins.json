@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.tazer.clutternomore.neoforge.mixin",
+  "plugin": "${mixin_plugin}",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "BuildCreativeModeTabContentsEventMixin",
+    "EventHooksMixin",
+    "FabricItemGroupEntriesMixin",
+    "compat.create.ItemRequirementMixin",
+    "compat.create.MaterialChecklistMixin",
+    "compat.create.StackRequirementMixin",
+    "compat.fractal.DefaultStackEntryCollectorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

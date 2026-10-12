@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.tazer.clutternomore.fabric.mixin",
+  "plugin": "${mixin_plugin}",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "AbstractFurnaceBlockEntityMixin",
+    "BuiltInRegistriesMixin",
+    "FabricItemGroupEntriesMixin",
+    "FuelValuesMixin",
+    "ShapedRecipeBuilderMixin",
+    "compat.create.ItemRequirementMixin",
+    "compat.create.MaterialChecklistMixin",
+    "compat.create.StackRequirementMixin",
+    "compat.fractal.DefaultStackEntryCollectorMixin"
+  ],
+  "client": [
+    "client.KeyboardHandlerMixin",
+    "client.MouseHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

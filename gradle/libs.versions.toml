@@ -1,0 +1,15 @@
+[versions]
+stonecutter = "0.9.8"
+loom = "1.18.4"
+moddev = "2.0.148"
+mod-publish = "1.1.0"
+
+[libraries]
+stonecutter = { module = "dev.kikugie:stonecutter", version.ref = "stonecutter" }
+mod-publish = { module = "me.modmuss50.mod-publish-plugin:me.modmuss50.mod-publish-plugin.gradle.plugin", version.ref = "mod-publish" }
+
+[plugins]
+fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "loom" }
+fabric-loom-remap = { id = "net.fabricmc.fabric-loom-remap", version.ref = "loom" }
+moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
+moddev-legacyforge = { id = "net.neoforged.moddev.legacyforge", version.ref = "moddev" }

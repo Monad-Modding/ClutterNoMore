@@ -1,0 +1,50 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.tazer.clutternomore.mixin",
+  "plugin": "${mixin_plugin}",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ServerGamePacketListenerImplMixin",
+    "access.FireBlockAccessor",
+    "block.BlockItemMixin",
+    "block.BlockMixin",
+    "creative.CreativeModeTabsAccessor",
+    "creative.ItemDisplayBuilderMixin",
+    "item.DataComponentInitializersMixin",
+    "item.DataComponentMapBuilderAccessor",
+    "item.ItemMixin",
+    "item.ItemStackMixin",
+    "pack.MultiPackResourceManagerMixin",
+    "recipe.IngredientMixin",
+    "recipe.RecipeManagerAccessor",
+    "recipe.RecipeManagerMixin",
+    "recipe.ReloadableServerResourcesMixin",
+    "recipe.SingleItemRecipeAccessor"
+  ],
+  "client": [
+    "client.AbstractContainerScreenMixin",
+    "client.BlockColorsMixin",
+    "client.CreativeModeInventoryScreenAccessor",
+    "client.CreativeModeInventoryScreenMixin",
+    "client.InventoryMixin",
+    "client.ItemColorsMixin",
+    "client.KeyMappingAccessor",
+    "client.MinecraftMixin",
+    "client.ReloadableResourceManagerMixin",
+    "client.ScreenCloseMixin",
+    "client.SessionSearchTreesMixin",
+    "client.SlotWrapperAccessor",
+    "compat.controlify.InGameInputHandlerMixin",
+    "compat.emi.ItemEmiStackMixin",
+    "compat.jei.ItemStackBatchRendererMixin",
+    "compat.jei.SimpleItemStackBatchRendererMixin",
+    "compat.mousetweaks.MainMixin",
+    "compat.rrv.ItemSlotMixin",
+    "screen.AbstractContainerScreenAccessor",
+    "screen.AccessibilityOptionsScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

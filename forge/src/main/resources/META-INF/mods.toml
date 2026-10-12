@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "${forge_loader}"
+license = "${license}"
+issueTrackerURL = "https://github.com/Alchemists-Of-Yore/ClutterNoMore/issues"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+displayURL = "https://modrinth.com/mod/clutter-no-more"
+logoFile = "logo.png"
+authors = "${authors}"
+description = '''${description}'''
+
+[[dependencies.${id}]]
+modId = "forge"
+mandatory = true
+versionRange = "${forge_loader}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${forge_minecraft}"
+ordering = "NONE"
+side = "BOTH"
