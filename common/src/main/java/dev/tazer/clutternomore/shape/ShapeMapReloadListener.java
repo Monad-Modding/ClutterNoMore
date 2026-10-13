@@ -74,6 +74,7 @@ public class ShapeMapReloadListener extends SimpleJsonResourceReloadListener {
             applyRules(file, mappings, detailed, false, index);
         }
         ShapeMap.setMappings(mappings, detailed);
+        ClutterNoMore.LOGGER.info("[ShapeMap] Resolved {} shape sets from {} files", ShapeMap.getShapesByParent().size(), pending.size());
     }
 
     private static void applyRules(LoadedFile file, List<ShapeMap.Mapping> mappings, boolean detailed, boolean adding, ShapeMapFile.ScanIndex index) {

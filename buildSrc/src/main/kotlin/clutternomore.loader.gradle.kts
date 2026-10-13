@@ -65,6 +65,7 @@ tasks.named<ProcessResources>("processResources") {
     from(commonResources)
     exclude(".cache/**")
     inputs.properties(metadata)
+    inputs.files(mainClasses).withPropertyName("mixinClasses")
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "pack.mcmeta", "*.mixins.json")) {
         expand(metadata)
     }

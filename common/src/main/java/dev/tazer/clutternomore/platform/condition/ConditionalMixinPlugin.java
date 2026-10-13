@@ -1,7 +1,7 @@
 package dev.tazer.clutternomore.platform.condition;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
@@ -16,7 +16,7 @@ import java.util.Set;
 
 public abstract class ConditionalMixinPlugin implements IMixinConfigPlugin {
 
-    private static final Logger LOGGER = LogManager.getLogger("ClutterNoMore Mixin Plugin");
+    private static final Logger LOGGER = LoggerFactory.getLogger("ClutterNoMore Mixin Plugin");
     private static final String MOD_PRESENT = Type.getDescriptor(IfModPresent.class);
     private static final String MOD_PRESENT_LIST = Type.getDescriptor(IfModPresent.List.class);
     private static final String DEV_ENVIRONMENT = Type.getDescriptor(IfDevEnvironment.class);

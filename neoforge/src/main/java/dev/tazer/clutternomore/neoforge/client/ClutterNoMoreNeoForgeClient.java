@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
@@ -39,6 +40,7 @@ public final class ClutterNoMoreNeoForgeClient {
         NeoForge.EVENT_BUS.addListener(ClutterNoMoreNeoForgeClient::onScreenMouseReleased);
         NeoForge.EVENT_BUS.addListener(ClutterNoMoreNeoForgeClient::onRenderGui);
         NeoForge.EVENT_BUS.addListener(ClutterNoMoreNeoForgeClient::onClientTick);
+        NeoForge.EVENT_BUS.addListener(ClutterNoMoreNeoForgeClient::onLoggingOut);
     }
 
     private static void onKeyMappings(RegisterKeyMappingsEvent event) {
@@ -103,5 +105,9 @@ public final class ClutterNoMoreNeoForgeClient {
 
     private static void onClientTick(ClientTickEvent.Pre event) {
         ClutterNoMoreClient.onClientTick(Minecraft.getInstance());
+    }
+
+    private static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        ClutterNoMoreClient.onDisconnect();
     }
 }

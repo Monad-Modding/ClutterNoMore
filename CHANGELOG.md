@@ -1,6 +1,2 @@
-- Refactored project to get all versions consistent in features
-- Added copper oxidization support for vertical slabs and steps
-- Added glass rendering support for vertical slabs and steps
-- Fixed various issues with /reload
-- Fixed the recipe fixes config option
-- Fixed vertical slabs and steps not inheriting many properties from their parent blocks
+- Fixed desync on some servers
+- Fixed RRV compat not working on servers

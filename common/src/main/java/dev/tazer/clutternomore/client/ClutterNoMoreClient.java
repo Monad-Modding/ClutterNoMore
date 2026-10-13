@@ -73,7 +73,15 @@ public final class ClutterNoMoreClient {
     }
 
     public static void init() {
-        ClutterNoMoreNetwork.SHAPE_MAP.setClientHandler(ShapeMapSync::apply);
+        ClutterNoMoreNetwork.SHAPE_MAP.setClientHandler(ClutterNoMoreClient::onShapeMapSync);
+    }
+
+    public static void onDisconnect() {
+        ShapeMap.clearRemoteShapeMaps();
+    }
+
+    private static void onShapeMapSync(ShapeMapSync packet) {
+        ShapeMapSync.apply(packet, !Minecraft.getInstance().hasSingleplayerServer());
     }
 
     @Nullable

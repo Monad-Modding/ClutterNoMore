@@ -30,7 +30,7 @@ public record ShapeMapSync(Map<ResourceLocation, List<ResourceLocation>> shapes,
             ResourceLocation shape = buf.readResourceLocation();
             parents.put(shape, buf.readResourceLocation());
         }
-        return new ShapeMapSync(shapes, parents, buf.readBoolean());
+        return new ShapeMapSync(shapes, parents, !buf.isReadable() || buf.readBoolean());
     }
 
     private static List<ResourceLocation> readIds(FriendlyByteBuf buf) {
@@ -75,7 +75,7 @@ public record ShapeMapSync(Map<ResourceLocation, List<ResourceLocation>> shapes,
         return new ShapeMapSync(shapes, parents, ClutterNoMore.STARTUP_CONFIG.recipeFixes.value());
     }
 
-    public static void apply(ShapeMapSync packet) {
+    public static void apply(ShapeMapSync packet, boolean fromRemoteServer) {
         Map<Item, List<Item>> shapesByParent = new HashMap<>();
         for (Map.Entry<ResourceLocation, List<ResourceLocation>> entry : packet.shapes.entrySet()) {
             Optional<Item> parent = BuiltInRegistries.ITEM.getOptional(entry.getKey());
@@ -95,8 +95,9 @@ public record ShapeMapSync(Map<ResourceLocation, List<ResourceLocation>> shapes,
                 parentByShape.put(shape.get(), parent.get());
             }
         }
-        ShapeMap.setShapeMaps(shapesByParent, parentByShape);
+        ShapeMap.setShapeMaps(shapesByParent, parentByShape, fromRemoteServer);
         RecipeFixes.setEnabled(packet.recipeFixes);
         CreativeModeTabsAccessor.cnm$setCachedParameters(null);
+        ClutterNoMore.LOGGER.info("[ShapeMap] Received {} shape sets from the server", shapesByParent.size());
     }
 }

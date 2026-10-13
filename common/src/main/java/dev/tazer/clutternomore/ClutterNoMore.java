@@ -3,15 +3,15 @@ package dev.tazer.clutternomore;
 import dev.tazer.clutternomore.data.RuntimePackResources;
 import dev.tazer.clutternomore.platform.Services;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
 public final class ClutterNoMore {
 
     public static final String MOD_ID = "clutternomore";
-    public static final Logger LOGGER = LogManager.getLogger("ClutterNoMore");
+    public static final Logger LOGGER = LoggerFactory.getLogger("ClutterNoMore");
     public static final ClutterNoMoreConfig.Startup STARTUP_CONFIG = ClutterNoMoreConfig.Startup.createToml(Services.PLATFORM.getConfigDirectory(), MOD_ID, "startup", ClutterNoMoreConfig.Startup.class);
     public static final RuntimePackResources RESOURCES = new RuntimePackResources();
     public static final Path RUNTIME_PACK = Services.PLATFORM.getGameDirectory().resolve("resourcepacks").resolve(MOD_ID);

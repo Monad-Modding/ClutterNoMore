@@ -35,17 +35,35 @@ import java.util.Set;
 
 public final class ShapeMap {
 
-    private static volatile Snapshot snapshot = new Snapshot(Map.of(), Map.of());
+    private static final Snapshot EMPTY = new Snapshot(Map.of(), Map.of());
+
+    private static volatile Snapshot snapshot = EMPTY;
+    private static volatile boolean remote;
 
     private ShapeMap() {
     }
 
-    public static void setShapeMaps(Map<Item, List<Item>> shapes, Map<Item, Item> parents) {
+    public static synchronized void setShapeMaps(Map<Item, List<Item>> shapes, Map<Item, Item> parents, boolean fromRemoteServer) {
+        if (remote && !fromRemoteServer) return;
         Map<Item, List<Item>> copied = new HashMap<>();
         for (Map.Entry<Item, List<Item>> entry : shapes.entrySet()) {
             copied.put(entry.getKey(), List.copyOf(entry.getValue()));
         }
         snapshot = new Snapshot(Collections.unmodifiableMap(copied), Map.copyOf(parents));
+        remote = fromRemoteServer;
+        //? if >=26 {
+        /*if (Services.PLATFORM.isModLoaded("rrv") && Services.PLATFORM.isClient()) {
+            for (Item shape : parents.keySet()) {
+                RrvCompat.hide(shape);
+            }
+        }
+        *///?}
+    }
+
+    public static synchronized void clearRemoteShapeMaps() {
+        if (!remote) return;
+        snapshot = EMPTY;
+        remote = false;
     }
 
     public static Map<Item, List<Item>> getShapesByParent() {
@@ -137,6 +155,7 @@ public final class ShapeMap {
     }
 
     public static void setMappings(List<Mapping> mappings, boolean detailedLogs) {
+        if (remote) return;
         Map<Item, List<Item>> shapesByParent = new HashMap<>();
         Map<Item, Item> parentByShape = new HashMap<>();
         Map<Item, Item> roots = new HashMap<>();
@@ -170,11 +189,6 @@ public final class ShapeMap {
                     continue;
                 }
                 parentByShape.put(member, parent);
-                //? if >=26 {
-                /*if (Services.PLATFORM.isModLoaded("rrv") && Services.PLATFORM.isClient()) {
-                    RrvCompat.hide(member);
-                }
-                *///?}
             }
             shapesByParent.put(parent, shapes);
             if (detailedLogs && groupMappings.size() > members.size() - 1) {
@@ -185,7 +199,7 @@ public final class ShapeMap {
                 ClutterNoMore.LOGGER.info("[ShapeMap] circular shape set resolved: parent={} shapes={}", BuiltInRegistries.ITEM.getKey(parent), ids);
             }
         }
-        setShapeMaps(shapesByParent, parentByShape);
+        setShapeMaps(shapesByParent, parentByShape, false);
     }
 
     @Nullable

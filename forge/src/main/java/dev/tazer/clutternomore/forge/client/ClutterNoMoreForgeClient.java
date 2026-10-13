@@ -6,6 +6,7 @@ import dev.tazer.clutternomore.client.ShapeSwitcherOptionsScreen;
 import dev.tazer.clutternomore.shape.ShapeTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -38,6 +39,7 @@ public final class ClutterNoMoreForgeClient {
         MinecraftForge.EVENT_BUS.addListener(ClutterNoMoreForgeClient::onScreenKeyReleased);
         MinecraftForge.EVENT_BUS.addListener(ClutterNoMoreForgeClient::onScreenMouseReleased);
         MinecraftForge.EVENT_BUS.addListener(ClutterNoMoreForgeClient::onRenderGui);
+        MinecraftForge.EVENT_BUS.addListener(ClutterNoMoreForgeClient::onLoggingOut);
         MinecraftForge.EVENT_BUS.addListener(ClutterNoMoreForgeClient::onClientTick);
     }
 
@@ -97,5 +99,9 @@ public final class ClutterNoMoreForgeClient {
         if (event.phase == TickEvent.Phase.START) {
             ClutterNoMoreClient.onClientTick(Minecraft.getInstance());
         }
+    }
+
+    private static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        ClutterNoMoreClient.onDisconnect();
     }
 }
