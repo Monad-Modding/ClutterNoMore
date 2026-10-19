@@ -1,1 +1,2 @@
-- Fix recipe fixes config option not turning entirely off
+- Fix recipe fixes config option not turning entirely off 
+- Fix panes and bars not connecting properly to vertical slabs

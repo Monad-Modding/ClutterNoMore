@@ -9,6 +9,7 @@
     "access.FireBlockAccessor",
     "block.BlockItemMixin",
     "block.BlockMixin",
+    "block.IronBarsBlockMixin",
     "creative.CreativeModeTabsAccessor",
     "creative.ItemDisplayBuilderMixin",
     "item.DataComponentInitializersMixin",
