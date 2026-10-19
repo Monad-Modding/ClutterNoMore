@@ -1,2 +1,1 @@
-- Fixed desync on some servers
-- Fixed RRV compat not working on servers
+- Fix recipe fixes config option not turning entirely off

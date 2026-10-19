@@ -18,6 +18,7 @@
     "item.ItemStackMixin",
     "pack.MultiPackResourceManagerMixin",
     "recipe.IngredientMixin",
+    "recipe.RecipeBookInventoryMixin",
     "recipe.RecipeManagerAccessor",
     "recipe.RecipeManagerMixin",
     "recipe.ReloadableServerResourcesMixin",

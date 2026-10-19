@@ -69,7 +69,8 @@ public final class RecipeRemover {
 
     //? if >=1.21 {
     public static void removeShapeRecipes(RecipeManager manager) {
-        if (!ClutterNoMore.STARTUP_CONFIG.recipeFixes.value() || ShapeMap.getParentByShape().isEmpty()) return;
+        if (ShapeMap.getParentByShape().isEmpty()) return;
+        boolean fixes = ClutterNoMore.STARTUP_CONFIG.recipeFixes.value();
         RecipeManagerAccessor accessor = (RecipeManagerAccessor) manager;
         Map<String, JsonElement> shapeToParent = new HashMap<>();
         for (Map.Entry<Item, Item> entry : ShapeMap.getParentByShape().entrySet()) {
@@ -104,7 +105,7 @@ public final class RecipeRemover {
                 if (result != null && ShapeMap.isShape(result)) {
                     continue;
                 }
-                if (!mayUseShapes(recipe)) {
+                if (!fixes || !mayUseShapes(recipe)) {
                     kept.add(holder);
                     continue;
                 }
@@ -345,7 +346,7 @@ public final class RecipeRemover {
     }
     //?} else {
     /*public static void removeShapeRecipes(RecipeManager manager, RegistryAccess registries) {
-        if (!ClutterNoMore.STARTUP_CONFIG.recipeFixes.value() || ShapeMap.getParentByShape().isEmpty()) return;
+        if (ShapeMap.getParentByShape().isEmpty()) return;
         boolean removed = false;
         List<Recipe<?>> kept = new ArrayList<>();
         for (Recipe<?> recipe : manager.getRecipes()) {
@@ -363,6 +364,7 @@ public final class RecipeRemover {
     private static boolean process(Recipe<?> recipe, RegistryAccess registries) {
         Item result = resultOf(recipe, registries);
         if (result != null && ShapeMap.isShape(result)) return true;
+        if (!ClutterNoMore.STARTUP_CONFIG.recipeFixes.value()) return false;
         if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
             for (int i = 0; i < ingredients.size(); i++) {
