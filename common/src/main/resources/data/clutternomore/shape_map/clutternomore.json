@@ -12,47 +12,6 @@
       "${ns}:${wood}"
     ],
 
-    "/minecraft:(?<stem>.+?)_planks/": {
-      "shapes": [
-        "/(?!minecraft:)[^:]+:${stem}_slab/",
-        "/(?!minecraft:)[^:]+:${stem}_stairs/",
-        "/(?!minecraft:)[^:]+:${stem}_wall/"
-      ],
-      "conditions": {
-        "is_blockitem": true
-      }
-    },
-
-    "/minecraft:(?<stem>.+?)_block/": {
-      "shapes": [
-        "/(?!minecraft:)[^:]+:${stem}_slab/",
-        "/(?!minecraft:)[^:]+:${stem}_stairs/",
-        "/(?!minecraft:)[^:]+:${stem}_wall/"
-      ],
-      "conditions": {
-        "is_blockitem": true,
-        "not": { "exists": ["/[^:]+:${stem}_planks/"] }
-      }
-    },
-
-    "/minecraft:(?<stem>.+?)(?<end>s|)/": {
-      "shapes": [
-        "/(?!minecraft:)[^:]+:${stem}_slab/",
-        "/(?!minecraft:)[^:]+:${stem}_stairs/",
-        "/(?!minecraft:)[^:]+:${stem}_wall/",
-        "/(?!minecraft:)[^:]+:${stem}${end}_slab/",
-        "/(?!minecraft:)[^:]+:${stem}${end}_stairs/",
-        "/(?!minecraft:)[^:]+:${stem}${end}_wall/"
-      ],
-      "conditions": {
-        "is_blockitem": true,
-        "none_of": [
-          { "exists": ["/[^:]+:${stem}_planks/"] },
-          { "exists": ["/[^:]+:${stem}_block/"] }
-        ]
-      }
-    },
-
     "/(?<ns>[^:]+):(?<stem>.+?)_planks/": {
       "shapes": [
         "${ns}:${stem}_slab",
@@ -94,6 +53,47 @@
         "none_of": [
           { "exists": ["${ns}:${stem}_planks"] },
           { "exists": ["${ns}:${stem}_block"] }
+        ]
+      }
+    },
+
+    "/minecraft:(?<stem>.+?)_planks/": {
+      "shapes": [
+        "/(?!minecraft:)[^:]+:${stem}_slab/",
+        "/(?!minecraft:)[^:]+:${stem}_stairs/",
+        "/(?!minecraft:)[^:]+:${stem}_wall/"
+      ],
+      "conditions": {
+        "is_blockitem": true
+      }
+    },
+
+    "/minecraft:(?<stem>.+?)_block/": {
+      "shapes": [
+        "/(?!minecraft:)[^:]+:${stem}_slab/",
+        "/(?!minecraft:)[^:]+:${stem}_stairs/",
+        "/(?!minecraft:)[^:]+:${stem}_wall/"
+      ],
+      "conditions": {
+        "is_blockitem": true,
+        "not": { "exists": ["/[^:]+:${stem}_planks/"] }
+      }
+    },
+
+    "/minecraft:(?<stem>.+?)(?<end>s|)/": {
+      "shapes": [
+        "/(?!minecraft:)[^:]+:${stem}_slab/",
+        "/(?!minecraft:)[^:]+:${stem}_stairs/",
+        "/(?!minecraft:)[^:]+:${stem}_wall/",
+        "/(?!minecraft:)[^:]+:${stem}${end}_slab/",
+        "/(?!minecraft:)[^:]+:${stem}${end}_stairs/",
+        "/(?!minecraft:)[^:]+:${stem}${end}_wall/"
+      ],
+      "conditions": {
+        "is_blockitem": true,
+        "none_of": [
+          { "exists": ["/[^:]+:${stem}_planks/"] },
+          { "exists": ["/[^:]+:${stem}_block/"] }
         ]
       }
     },
