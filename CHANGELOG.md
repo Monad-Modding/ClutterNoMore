@@ -1,2 +1,3 @@
-- Fix recipe fixes config option not turning entirely off 
-- Fix panes and bars not connecting properly to vertical slabs
+- Fix vertical slab UVs
+- Fix ordering of walls in shape map
+- Fix items disappearing from creative tabs incorrectly
