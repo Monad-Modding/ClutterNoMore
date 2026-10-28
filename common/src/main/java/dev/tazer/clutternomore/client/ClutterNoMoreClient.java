@@ -166,24 +166,24 @@ public final class ClutterNoMoreClient {
         } else if (action == RELEASED) {
             keyHeld = false;
         }
-        ItemStack held = heldShapeStack(minecraft);
-        if (held == null) return;
+        InteractionHand hand = shapeHand(minecraft);
+        if (hand == null) return;
         switch (CONFIG.hold.value()) {
             case HOLD -> {
                 if (overlay == null && action == PRESSED) {
-                    overlay = new ShapeSwitcherOverlay(minecraft, held, true);
+                    overlay = new ShapeSwitcherOverlay(minecraft, hand, true);
                 } else if (action == RELEASED) {
                     overlay = null;
                 }
             }
             case TOGGLE -> {
                 if (action == PRESSED) {
-                    overlay = overlay == null ? new ShapeSwitcherOverlay(minecraft, held, true) : null;
+                    overlay = overlay == null ? new ShapeSwitcherOverlay(minecraft, hand, true) : null;
                 }
             }
             case PRESS -> {
                 if (action == PRESSED) {
-                    cycleOnce(minecraft, held);
+                    cycleOnce(minecraft, hand);
                 }
             }
         }
@@ -197,38 +197,39 @@ public final class ClutterNoMoreClient {
         } else if (justReleased) {
             keyHeld = false;
         }
-        ItemStack held = heldShapeStack(minecraft);
-        if (held == null) return;
+        InteractionHand hand = shapeHand(minecraft);
+        if (hand == null) return;
         switch (CONFIG.hold.value()) {
             case HOLD -> {
                 if (overlay == null && down) {
-                    overlay = new ShapeSwitcherOverlay(minecraft, held, true);
+                    overlay = new ShapeSwitcherOverlay(minecraft, hand, true);
                 } else if (justReleased) {
                     overlay = null;
                 }
             }
             case TOGGLE -> {
                 if (justTapped && !keyHeld) {
-                    overlay = overlay == null ? new ShapeSwitcherOverlay(minecraft, held, true) : null;
+                    overlay = overlay == null ? new ShapeSwitcherOverlay(minecraft, hand, true) : null;
                 }
             }
             case PRESS -> {
                 if (justTapped && !keyHeld) {
-                    cycleOnce(minecraft, held);
+                    cycleOnce(minecraft, hand);
                 }
             }
         }
     }
 
     @Nullable
-    private static ItemStack heldShapeStack(Minecraft minecraft) {
+    public static InteractionHand shapeHand(Minecraft minecraft) {
         if (minecraft.player == null) return null;
-        ItemStack held = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
-        return ShapeMap.contains(held.getItem()) ? held : null;
+        if (ShapeMap.contains(minecraft.player.getItemInHand(InteractionHand.MAIN_HAND).getItem())) return InteractionHand.MAIN_HAND;
+        if (ShapeMap.contains(minecraft.player.getItemInHand(InteractionHand.OFF_HAND).getItem())) return InteractionHand.OFF_HAND;
+        return null;
     }
 
-    private static void cycleOnce(Minecraft minecraft, ItemStack held) {
-        ShapeSwitcherOverlay switcher = overlay == null ? new ShapeSwitcherOverlay(minecraft, held, false) : overlay;
+    private static void cycleOnce(Minecraft minecraft, InteractionHand hand) {
+        ShapeSwitcherOverlay switcher = overlay == null ? new ShapeSwitcherOverlay(minecraft, hand, false) : overlay;
         switcher.onMouseScrolled(-1);
         overlay = null;
     }

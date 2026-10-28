@@ -112,13 +112,17 @@
       "${ns}:${stem}_vertical_slab"
     ],
 
-    "/minecraft:(?<stem>.+)_stair(s|)/": [
-      "clutternomore:${stem}_step"
+    "/minecraft:(?<stem>.+)_stair(?<s>s|)/": [
+      "clutternomore:${stem}_step",
+      "clutternomore:vertical_${stem}_stair${s}",
+      "clutternomore:vertical_${stem}_step"
     ],
 
-    "/(?!minecraft:)(?<ns>[^:]+):(?<stem>.+)_stair(s|)/": [
+    "/(?!minecraft:)(?<ns>[^:]+):(?<stem>.+)_stair(?<s>s|)/": [
       "clutternomore:${ns}/${stem}_step",
-      "${ns}:${stem}_step"
+      "${ns}:${stem}_step",
+      "clutternomore:${ns}/vertical_${stem}_stair${s}",
+      "clutternomore:${ns}/vertical_${stem}_step"
     ],
 
     "/(?<ns>[^:]+):(?<wood>.+)_stem/": [

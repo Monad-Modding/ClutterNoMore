@@ -1,3 +1,4 @@
-- Fix vertical slab UVs
-- Fix ordering of walls in shape map
-- Fix items disappearing from creative tabs incorrectly
+- Added optional Vertical Stairs and Vertical Steps, can be enabled in the startup config
+- Added offhand support
+- Fixed recipe fixes config, again
+- Fixed crash with JEI

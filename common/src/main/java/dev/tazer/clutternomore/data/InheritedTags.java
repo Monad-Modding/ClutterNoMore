@@ -2,9 +2,8 @@ package dev.tazer.clutternomore.data;
 
 import com.google.gson.JsonArray;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.block.StepBlock;
-import dev.tazer.clutternomore.block.VerticalSlabBlock;
 import dev.tazer.clutternomore.registry.ShapeBlocks;
+import dev.tazer.clutternomore.registry.ShapeType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -22,10 +21,6 @@ import java.util.function.Predicate;
 public final class InheritedTags {
 
     private static final List<String> INHERITED_PREFIXES = List.of("mineable/", "needs_", "incorrect_for_");
-    private static final ResourceLocation WOODEN_SLABS = ClutterNoMore.id("minecraft", "wooden_slabs");
-    private static final ResourceLocation WOODEN_STAIRS = ClutterNoMore.id("minecraft", "wooden_stairs");
-    private static final ResourceLocation WOODEN_VERTICAL_SLABS = ClutterNoMore.id("wooden_vertical_slabs");
-    private static final ResourceLocation WOODEN_STEPS = ClutterNoMore.id("wooden_steps");
 
     private InheritedTags() {
     }
@@ -44,11 +39,13 @@ public final class InheritedTags {
                 write(RuntimeData.blockTagFile(tag), shapes);
             }
         }
-        write(RuntimeData.blockTagFile(WOODEN_VERTICAL_SLABS), shapesIn(blockTags.resolve(WOODEN_SLABS), blocks, BuiltInRegistries.BLOCK, block -> block instanceof VerticalSlabBlock));
-        write(RuntimeData.blockTagFile(WOODEN_STEPS), shapesIn(blockTags.resolve(WOODEN_STAIRS), blocks, BuiltInRegistries.BLOCK, block -> block instanceof StepBlock));
+        for (ShapeType type : ShapeType.values()) {
+            write(RuntimeData.blockTagFile(type.getWoodenTag()), shapesIn(blockTags.resolve(type.getWoodenSource()), blocks, BuiltInRegistries.BLOCK, block -> ShapeBlocks.getType(block) == type));
+        }
         TagFiles itemTags = new TagFiles(manager, RuntimeData.getItemTagFolder());
-        write(RuntimeData.itemTagFile(WOODEN_VERTICAL_SLABS), shapesIn(itemTags.resolve(WOODEN_SLABS), items, BuiltInRegistries.ITEM, item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof VerticalSlabBlock));
-        write(RuntimeData.itemTagFile(WOODEN_STEPS), shapesIn(itemTags.resolve(WOODEN_STAIRS), items, BuiltInRegistries.ITEM, item -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof StepBlock));
+        for (ShapeType type : ShapeType.values()) {
+            write(RuntimeData.itemTagFile(type.getWoodenTag()), shapesIn(itemTags.resolve(type.getWoodenSource()), items, BuiltInRegistries.ITEM, item -> item instanceof BlockItem blockItem && ShapeBlocks.getType(blockItem.getBlock()) == type));
+        }
     }
 
     private static boolean isInherited(ResourceLocation tag) {

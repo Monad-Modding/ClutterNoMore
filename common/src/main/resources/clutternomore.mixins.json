@@ -20,10 +20,12 @@
     "pack.MultiPackResourceManagerMixin",
     "recipe.IngredientMixin",
     "recipe.RecipeBookInventoryMixin",
+    "recipe.RecipeCacheEntryMixin",
     "recipe.RecipeManagerAccessor",
     "recipe.RecipeManagerMixin",
     "recipe.ReloadableServerResourcesMixin",
-    "recipe.SingleItemRecipeAccessor"
+    "recipe.SingleItemRecipeAccessor",
+    "recipe.TransmuteRecipeMixin"
   ],
   "client": [
     "client.AbstractContainerScreenMixin",

@@ -46,8 +46,7 @@ public final class AssetGenerator {
             }
         }
         write("lang/en_us.json", lang);
-        VerticalSlabAssets.generate(manager);
-        StepAssets.generate(manager);
+        ShapeAssets.generate(manager);
         if (ClutterNoMoreClient.CONFIG.runtimeAssetGeneration.value()) {
             ClutterNoMore.RESOURCES.dump(PackType.CLIENT_RESOURCES, ClutterNoMore.RUNTIME_PACK);
         }

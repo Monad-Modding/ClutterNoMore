@@ -7,6 +7,7 @@ import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.data.RuntimeData;
 import dev.tazer.clutternomore.data.TagFiles;
 import dev.tazer.clutternomore.registry.ShapeBlocks;
+import dev.tazer.clutternomore.registry.ShapeType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -41,18 +42,22 @@ public final class CopperDataMaps {
         TagFiles blockTags = new TagFiles(manager, RuntimeData.getBlockTagFolder());
         Map<Block, Block> oxidation = new LinkedHashMap<>(ShapeBlocks.getOxidationStages());
         for (Map.Entry<Block, Block> pair : read(manager, OXIDIZABLES, NEXT_STAGE, blockTags).entrySet()) {
-            Block shape = ShapeBlocks.getShape(pair.getKey());
-            Block next = ShapeBlocks.getShape(pair.getValue());
-            if (shape instanceof WeatheringCopper && next != null && next != shape) {
-                oxidation.put(shape, next);
+            for (ShapeType type : ShapeType.values()) {
+                Block shape = ShapeBlocks.getShape(type, pair.getKey());
+                Block next = ShapeBlocks.getShape(type, pair.getValue());
+                if (shape instanceof WeatheringCopper && next != null && next != shape) {
+                    oxidation.put(shape, next);
+                }
             }
         }
         Map<Block, Block> waxing = new LinkedHashMap<>(ShapeBlocks.getWaxedBlocks());
         for (Map.Entry<Block, Block> pair : read(manager, WAXABLES, WAXED, blockTags).entrySet()) {
-            Block shape = ShapeBlocks.getShape(pair.getKey());
-            Block waxed = ShapeBlocks.getShape(pair.getValue());
-            if (shape != null && waxed != null && waxed != shape) {
-                waxing.put(shape, waxed);
+            for (ShapeType type : ShapeType.values()) {
+                Block shape = ShapeBlocks.getShape(type, pair.getKey());
+                Block waxed = ShapeBlocks.getShape(type, pair.getValue());
+                if (shape != null && waxed != null && waxed != shape) {
+                    waxing.put(shape, waxed);
+                }
             }
         }
         ClutterNoMore.RESOURCES.addReloadedJson(PackType.SERVER_DATA, file(OXIDIZABLES), dataMap(oxidation, NEXT_STAGE));

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.registry.ShapeType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
@@ -12,20 +13,20 @@ import java.util.Map;
 
 public final class RuntimeData {
 
-    private static final Map<ShapeTag, JsonArray> TAGS = new EnumMap<>(ShapeTag.class);
+    private static final Map<ShapeType, JsonArray> TAGS = new EnumMap<>(ShapeType.class);
 
     private RuntimeData() {
     }
 
-    public static void addToTag(ShapeTag tag, ResourceLocation id) {
+    public static void addToTag(ShapeType tag, ResourceLocation id) {
         TAGS.computeIfAbsent(tag, key -> new JsonArray()).add(id.toString());
     }
 
     public static void generate() {
-        for (ShapeTag tag : ShapeTag.values()) {
+        for (ShapeType tag : ShapeType.values()) {
             JsonObject file = tagFile(TAGS.getOrDefault(tag, new JsonArray()));
-            writeServerData(ClutterNoMore.id(getBlockTagFolder() + "/" + tag.getName() + ".json"), file);
-            writeServerData(ClutterNoMore.id(getItemTagFolder() + "/" + tag.getName() + ".json"), file);
+            writeServerData(ClutterNoMore.id(getBlockTagFolder() + "/" + tag.getTag() + ".json"), file);
+            writeServerData(ClutterNoMore.id(getItemTagFolder() + "/" + tag.getTag() + ".json"), file);
         }
     }
 
@@ -68,20 +69,5 @@ public final class RuntimeData {
         JsonObject tag = new JsonObject();
         tag.add("values", values);
         return tag;
-    }
-
-    public enum ShapeTag {
-        VERTICAL_SLABS("vertical_slabs"),
-        STEPS("steps");
-
-        private final String name;
-
-        ShapeTag(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return this.name;
-        }
     }
 }

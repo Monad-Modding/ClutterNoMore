@@ -29,6 +29,7 @@ public final class ShapeSwitcherOverlay {
     private final Minecraft minecraft;
     private final boolean visible;
     private final int hotbarSlot;
+    private final InteractionHand hand;
     private final List<Item> shapes;
 
     private int selectedIndex;
@@ -36,11 +37,13 @@ public final class ShapeSwitcherOverlay {
     private float lastYaw;
     private float accumulatedYaw;
 
-    public ShapeSwitcherOverlay(Minecraft minecraft, ItemStack held, boolean visible) {
+    public ShapeSwitcherOverlay(Minecraft minecraft, InteractionHand hand, boolean visible) {
         LocalPlayer player = Objects.requireNonNull(minecraft.player);
+        ItemStack held = player.getItemInHand(hand);
         this.minecraft = minecraft;
         this.visible = visible;
         this.hotbarSlot = ClutterNoMoreClient.selectedSlot(player);
+        this.hand = hand;
         this.shapes = ShapeMap.getShapes(held.getItem());
         this.selectedIndex = Math.max(ShapeMap.getShapeIndex(held), 0);
         this.displayedIndex = this.selectedIndex;
@@ -64,7 +67,7 @@ public final class ShapeSwitcherOverlay {
         int centreX = graphics.guiWidth() / 2 - 8;
         float smoothing = 1 - (float) Math.exp(-5 * partialTick);
         this.displayedIndex = Mth.lerp(smoothing, this.displayedIndex, this.selectedIndex);
-        ItemStack held = this.player().getItemInHand(InteractionHand.MAIN_HAND);
+        ItemStack held = this.player().getItemInHand(this.hand);
         if (ClutterNoMoreClient.CONFIG.scrolling.value()) {
             int startX = Mth.floor(centreX - this.displayedIndex * SPACING);
             RenderHelper.blit(graphics, SELECTED, centreX - 3, y - 3, 22, 22);
@@ -127,14 +130,15 @@ public final class ShapeSwitcherOverlay {
         }
         if (this.selectedIndex == previous) return;
         LocalPlayer player = this.player();
-        player.setItemInHand(InteractionHand.MAIN_HAND, ShapeMap.transferStack(player.getItemInHand(InteractionHand.MAIN_HAND), this.selectedIndex));
+        player.setItemInHand(this.hand, ShapeMap.transferStack(player.getItemInHand(this.hand), this.selectedIndex));
         ClutterNoMoreClient.playSwitchSound(player);
-        ClutterNoMoreClient.sendChangeShape(ChangeShape.HELD, ChangeShape.HELD, this.selectedIndex);
+        int slot = this.hand == InteractionHand.MAIN_HAND ? ChangeShape.HELD : ChangeShape.OFFHAND;
+        ClutterNoMoreClient.sendChangeShape(slot, slot, this.selectedIndex);
     }
 
     public boolean shouldStayOpen() {
         LocalPlayer player = this.player();
-        return ShapeMap.contains(player.getItemInHand(InteractionHand.MAIN_HAND).getItem()) && ClutterNoMoreClient.selectedSlot(player) == this.hotbarSlot;
+        return ClutterNoMoreClient.shapeHand(this.minecraft) == this.hand && ClutterNoMoreClient.selectedSlot(player) == this.hotbarSlot;
     }
 
     private LocalPlayer player() {

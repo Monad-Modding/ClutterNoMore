@@ -28,6 +28,14 @@ public final class ClutterNoMoreConfig {
         @SerializedName("steps")
         public final TrackedValue<Boolean> steps = this.value(true);
 
+        @Comment("If vertical stairs should be added to all existing stairs")
+        @SerializedName("vertical_stairs")
+        public final TrackedValue<Boolean> verticalStairs = this.value(false);
+
+        @Comment("If vertical steps should be added to all existing stairs")
+        @SerializedName("vertical_steps")
+        public final TrackedValue<Boolean> verticalSteps = this.value(false);
+
         @Comment("If recipes should have their shapes replaced by the parent block")
         @SerializedName("recipe_fixes")
         public final TrackedValue<Boolean> recipeFixes = this.value(true);

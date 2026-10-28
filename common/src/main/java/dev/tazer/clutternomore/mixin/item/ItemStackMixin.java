@@ -33,5 +33,12 @@ public class ItemStackMixin {
     private static ItemStack cnm$hashAsParent(ItemStack stack) {
         return stack != null && ShapeMap.isShape(stack) ? ShapeMap.transferStack(stack, 0) : stack;
     }
+
+    @Inject(method = "matches(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z", at = @At("RETURN"), cancellable = true)
+    private static void cnm$exactShape(ItemStack stack, ItemStack other, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValue() && stack.getItem() != other.getItem()) {
+            cir.setReturnValue(false);
+        }
+    }
     //?}
 }

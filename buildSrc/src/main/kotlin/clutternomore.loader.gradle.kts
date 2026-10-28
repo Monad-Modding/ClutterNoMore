@@ -92,7 +92,7 @@ val loaderName: String = when (platform) {
 }
 
 publishMods {
-    type = if (platform == "forge") BETA else STABLE
+    type = STABLE
     displayName = "${mod("name")} ${mod("version")} for $mcVersion $loaderName"
     version = "${mod("version")}+$mcVersion-$platform"
     changelog = provider { rootProject.file("CHANGELOG.md").readText() }

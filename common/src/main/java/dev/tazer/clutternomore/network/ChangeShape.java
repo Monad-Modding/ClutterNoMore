@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public record ChangeShape(int containerId, int slot, int shapeIndex) {
 
     public static final int HELD = -1;
+    public static final int OFFHAND = -2;
 
     public static ChangeShape read(FriendlyByteBuf buf) {
         return new ChangeShape(buf.readInt(), buf.readInt(), buf.readInt());
@@ -25,12 +26,13 @@ public record ChangeShape(int containerId, int slot, int shapeIndex) {
 
     public static void handle(ChangeShape packet, ServerPlayer player) {
         if (packet.shapeIndex < 0 || player.isSpectator()) return;
-        if (packet.slot == HELD) {
-            ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (packet.slot == HELD || packet.slot == OFFHAND) {
+            InteractionHand hand = packet.slot == HELD ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            ItemStack held = player.getItemInHand(hand);
             if (!ShapeMap.contains(held.getItem())) return;
             ItemStack next = ShapeMap.transferStack(held, packet.shapeIndex);
             if (ShapeMap.isUnchanged(held, next)) return;
-            player.setItemInHand(InteractionHand.MAIN_HAND, next);
+            player.setItemInHand(hand, next);
             return;
         }
         AbstractContainerMenu menu = findMenu(player, packet.containerId);

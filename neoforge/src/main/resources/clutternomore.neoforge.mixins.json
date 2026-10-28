@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BuildCreativeModeTabContentsEventMixin",
+    "DataComponentIngredientMixin",
     "EventHooksMixin",
     "FabricItemGroupEntriesMixin",
     "compat.create.ItemRequirementMixin",

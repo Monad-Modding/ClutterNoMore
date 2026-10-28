@@ -6,7 +6,7 @@
   "description": "${description}",
   "authors": ["${authors}"],
   "contact": {
-    "homepage": "https://modrinth.com/mod/clutter-no-more",
+    "homepage": "https://modrinth.com/mod/clutternomore",
     "sources": "https://github.com/Alchemists-Of-Yore/ClutterNoMore",
     "issues": "https://github.com/Alchemists-Of-Yore/ClutterNoMore/issues"
   },

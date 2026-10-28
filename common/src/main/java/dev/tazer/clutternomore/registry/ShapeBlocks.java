@@ -4,13 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreConfig;
-import dev.tazer.clutternomore.block.StepBlock;
-import dev.tazer.clutternomore.block.TransparentShapes;
-import dev.tazer.clutternomore.block.TransparentStepBlock;
-import dev.tazer.clutternomore.block.TransparentVerticalSlabBlock;
-import dev.tazer.clutternomore.block.VerticalSlabBlock;
-import dev.tazer.clutternomore.block.WeatheringStepBlock;
-import dev.tazer.clutternomore.block.WeatheringVerticalSlabBlock;
 import dev.tazer.clutternomore.data.RuntimeData;
 import dev.tazer.clutternomore.mixin.access.FireBlockAccessor;
 import dev.tazer.clutternomore.platform.Services;
@@ -22,8 +15,6 @@ import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +39,8 @@ public final class ShapeBlocks {
     private static final BiMap<Block, Block> WAXED_BLOCKS = HashBiMap.create();
     private static final List<String> SHAPE_PATHS = new ArrayList<>();
     private static final Map<Block, Block> SOURCES = new LinkedHashMap<>();
-    private static final Map<Block, Block> SHAPES = new LinkedHashMap<>();
+    private static final Map<ShapeType, Map<Block, Block>> SHAPES = new EnumMap<>(ShapeType.class);
+    private static final Map<Block, ShapeType> TYPES = new LinkedHashMap<>();
     private static final Map<Item, Item> SOURCE_ITEMS = new LinkedHashMap<>();
 
     private ShapeBlocks() {
@@ -99,8 +92,14 @@ public final class ShapeBlocks {
     }
 
     @Nullable
-    public static Block getShape(Block source) {
-        return SHAPES.get(source);
+    public static Block getShape(ShapeType type, Block source) {
+        Map<Block, Block> shapes = SHAPES.get(type);
+        return shapes == null ? null : shapes.get(source);
+    }
+
+    @Nullable
+    public static ShapeType getType(Block shape) {
+        return TYPES.get(shape);
     }
 
     public static void applyFlammability() {
@@ -137,12 +136,35 @@ public final class ShapeBlocks {
         return ClutterNoMore.id(shapePrefix(stairs) + stairs.getPath().replace("stairs", "step"));
     }
 
+    public static ResourceLocation verticalStairsOf(ResourceLocation stairs) {
+        return ClutterNoMore.id(shapePrefix(stairs) + "vertical_" + stairs.getPath());
+    }
+
+    public static ResourceLocation verticalStepOf(ResourceLocation stairs) {
+        String path = stairs.getPath();
+        String step = path.replace("stairs", "step");
+        if (step.equals(path)) {
+            step = path.replace("stair", "step");
+        }
+        if (step.equals(path)) {
+            step = path + "_step";
+        }
+        return ClutterNoMore.id(shapePrefix(stairs) + "vertical_" + step);
+    }
+
     public static void registerVariants() {
         Services.PLATFORM.beforeShapeRegistration();
         ClutterNoMoreConfig.Startup config = ClutterNoMore.STARTUP_CONFIG;
-        if (!config.verticalSlabs.value() && !config.steps.value()) return;
+        List<ShapeType> types = new ArrayList<>();
+        for (ShapeType type : ShapeType.values()) {
+            if (type.isEnabled(config)) {
+                types.add(type);
+            }
+        }
+        if (types.isEmpty()) return;
         Map<String, Function<BlockBehaviour.Properties, Block>> pending = new LinkedHashMap<>();
         Map<String, BlockItem> parents = new LinkedHashMap<>();
+        Map<String, ShapeType> pendingTypes = new LinkedHashMap<>();
         List<Map.Entry<ResourceKey<Item>, Item>> items = new ArrayList<>(BuiltInRegistries.ITEM.entrySet());
         items.sort(Comparator.comparing(entry -> entry.getKey().location()));
         for (Map.Entry<ResourceKey<Item>, Item> entry : items) {
@@ -151,33 +173,19 @@ public final class ShapeBlocks {
             }
             ResourceLocation parentId = entry.getKey().location();
             Block block = blockItem.getBlock();
-            if (block instanceof SlabBlock slab && propertyCount(slab.defaultBlockState()) == 2 && config.verticalSlabs.value()) {
-                String path = verticalSlabOf(parentId).getPath();
-                if (slab instanceof WeatheringCopper weathering) {
-                    pending.put(path, properties -> new WeatheringVerticalSlabBlock(weathering.getAge(), properties));
-                } else if (TransparentShapes.isGlassLike(slab.defaultBlockState())) {
-                    pending.put(path, TransparentVerticalSlabBlock::new);
-                } else {
-                    pending.put(path, VerticalSlabBlock::new);
+            for (ShapeType type : types) {
+                if (!type.accepts(block)) {
+                    continue;
                 }
+                String path = type.idOf(parentId).getPath();
+                pending.put(path, type.factory(block));
                 parents.put(path, blockItem);
-                RuntimeData.addToTag(RuntimeData.ShapeTag.VERTICAL_SLABS, ClutterNoMore.id(path));
-            }
-            if (block instanceof StairBlock stairs && propertyCount(stairs.defaultBlockState()) == 4 && config.steps.value()) {
-                String path = stepOf(parentId).getPath();
-                if (stairs instanceof WeatheringCopper weathering) {
-                    pending.put(path, properties -> new WeatheringStepBlock(weathering.getAge(), properties));
-                } else if (TransparentShapes.isGlassLike(stairs.defaultBlockState())) {
-                    pending.put(path, TransparentStepBlock::new);
-                } else {
-                    pending.put(path, StepBlock::new);
-                }
-                parents.put(path, blockItem);
-                RuntimeData.addToTag(RuntimeData.ShapeTag.STEPS, ClutterNoMore.id(path));
+                pendingTypes.put(path, type);
+                RuntimeData.addToTag(type, ClutterNoMore.id(path));
             }
         }
         for (Map.Entry<String, Function<BlockBehaviour.Properties, Block>> entry : pending.entrySet()) {
-            register(entry.getKey(), entry.getValue(), parents.get(entry.getKey()));
+            register(entry.getKey(), entry.getValue(), parents.get(entry.getKey()), pendingTypes.get(entry.getKey()));
         }
         SHAPE_PATHS.addAll(pending.keySet());
         resolveCopper();
@@ -185,7 +193,7 @@ public final class ShapeBlocks {
         Services.PLATFORM.afterShapeRegistration();
     }
 
-    private static void register(String path, Function<BlockBehaviour.Properties, Block> factory, BlockItem parent) {
+    private static void register(String path, Function<BlockBehaviour.Properties, Block> factory, BlockItem parent, ShapeType type) {
         ResourceLocation id = ClutterNoMore.id(path);
         Block block = factory.apply(copy(parent.getBlock(), id));
         Services.PLATFORM.register(BuiltInRegistries.BLOCK, id, block);
@@ -196,7 +204,8 @@ public final class ShapeBlocks {
         BlockItem item = new BlockItem(block, properties);
         Services.PLATFORM.register(BuiltInRegistries.ITEM, id, item);
         SOURCES.put(block, parent.getBlock());
-        SHAPES.put(parent.getBlock(), block);
+        SHAPES.computeIfAbsent(type, key -> new LinkedHashMap<>()).put(parent.getBlock(), block);
+        TYPES.put(block, type);
         SOURCE_ITEMS.put(item, parent);
     }
 
@@ -214,10 +223,11 @@ public final class ShapeBlocks {
         for (Map.Entry<Block, Block> entry : SOURCES.entrySet()) {
             Block shape = entry.getKey();
             BlockState source = entry.getValue().defaultBlockState();
+            ShapeType type = TYPES.get(shape);
             if (shape instanceof WeatheringCopper && entry.getValue() instanceof WeatheringCopper copper) {
-                pair(NEXT_OXIDATION, shape, copper.getNext(source));
+                pair(NEXT_OXIDATION, type, shape, copper.getNext(source));
             }
-            pair(WAXED_BLOCKS, shape, HoneycombItem.getWaxed(source));
+            pair(WAXED_BLOCKS, type, shape, HoneycombItem.getWaxed(source));
         }
         for (Block shape : SOURCES.keySet()) {
             ResourceLocation id = BuiltInRegistries.BLOCK.getKey(shape);
@@ -232,8 +242,8 @@ public final class ShapeBlocks {
         }
     }
 
-    private static void pair(BiMap<Block, Block> pairs, Block shape, Optional<BlockState> target) {
-        Block paired = target.map(state -> SHAPES.get(state.getBlock())).orElse(null);
+    private static void pair(BiMap<Block, Block> pairs, ShapeType type, Block shape, Optional<BlockState> target) {
+        Block paired = target.map(state -> getShape(type, state.getBlock())).orElse(null);
         if (paired != null && paired != shape && !pairs.containsValue(paired)) {
             pairs.put(shape, paired);
         }
@@ -253,13 +263,5 @@ public final class ShapeBlocks {
         if (path.contains("weathered")) return ClutterNoMore.id(id.getNamespace(), path.replace("weathered", "exposed"));
         if (path.contains("exposed_")) return ClutterNoMore.id(id.getNamespace(), path.replace("exposed_", ""));
         return null;
-    }
-
-    private static int propertyCount(BlockState state) {
-        //? if >=26 {
-        /*return state.getValues().toList().size();
-        *///?} else {
-        return state.getValues().size();
-        //?}
     }
 }
