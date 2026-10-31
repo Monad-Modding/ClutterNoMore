@@ -149,7 +149,14 @@ public final class AssetGenerator {
     }
 
     public static void generateItem(ResourceLocation parent, ResourceLocation shape, ResourceManager manager) {
-        String model = "clutternomore:block/" + shape.getPath().replace("waxed_", "");
+        generateItem(parent, shape, modelId(shape), manager);
+    }
+
+    public static String modelId(ResourceLocation shape) {
+        return "clutternomore:block/" + shape.getPath().replace("waxed_", "");
+    }
+
+    public static void generateItem(ResourceLocation parent, ResourceLocation shape, String model, ResourceManager manager) {
         //? if >=1.21.4 {
         /*if (manager.getResource(shape.withPrefix("items/").withSuffix(".json")).isPresent()) return;
         JsonObject definition = new JsonObject();

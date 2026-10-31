@@ -1,1 +1,2 @@
 - Fixed crash with JEI, again.
+- Added files to define rotateable vertical slabs under `assets/modid/rotateable_vertical_slabs/`
