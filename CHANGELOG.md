@@ -1,4 +1,1 @@
-- Added optional Vertical Stairs and Vertical Steps, can be enabled in the startup config
-- Added offhand support
-- Fixed recipe fixes config, again
-- Fixed crash with JEI
+- Fixed crash with JEI, again.
