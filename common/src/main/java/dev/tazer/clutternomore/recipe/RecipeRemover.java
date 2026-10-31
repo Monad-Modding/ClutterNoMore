@@ -131,13 +131,19 @@ public final class RecipeRemover {
                 if (mutate(json.get(), shapeToParent, tags)) {
                     //? if >=26.3 {
                     /*Optional<Holder<Recipe<?>>> decoded = Recipe.CODEC.parse(ops, json.get()).result();
-                    if (decoded.isPresent()) {
+                    if (decoded.isPresent() && resultOf(decoded.get().value(), context) == result) {
                         kept.add(new RecipeHolder<>(holder.id(), decoded.get().value()));
+                        continue;
+                    }
+                    *///?} else if >=26 {
+                    /*Optional<Recipe<?>> decoded = Recipe.CODEC.parse(ops, json.get()).result();
+                    if (decoded.isPresent() && resultOf(decoded.get(), context) == result) {
+                        kept.add(new RecipeHolder<>(holder.id(), decoded.get()));
                         continue;
                     }
                     *///?} else {
                     Optional<Recipe<?>> decoded = Recipe.CODEC.parse(ops, json.get()).result();
-                    if (decoded.isPresent()) {
+                    if (decoded.isPresent() && decoded.get().getResultItem(accessor.cnm$getRegistries()).getItem() == result) {
                         kept.add(new RecipeHolder<>(holder.id(), decoded.get()));
                         continue;
                     }
@@ -203,7 +209,7 @@ public final class RecipeRemover {
             }
             boolean collapses = true;
             for (JsonElement element : expanded) {
-                if (!element.getAsJsonObject().get("item").getAsString().equals(resultId)) {
+                if (!expandedId(element).equals(resultId)) {
                     collapses = false;
                     break;
                 }
@@ -213,6 +219,10 @@ public final class RecipeRemover {
             }
         }
         return dangerous;
+    }
+
+    private static String expandedId(JsonElement element) {
+        return element.isJsonObject() ? element.getAsJsonObject().get("item").getAsString() : element.getAsString();
     }
 
     private static Map<String, TagInfo> buildTagCache() {
@@ -239,9 +249,13 @@ public final class RecipeRemover {
                 id = BuiltInRegistries.ITEM.getKey(item).toString();
             }
             if (seen.add(id)) {
+                //? if >=26 {
+                /*expanded.add(id);
+                *///?} else {
                 JsonObject entry = new JsonObject();
                 entry.addProperty("item", id);
                 expanded.add(entry);
+                //?}
             }
         }
         if (!shapes.isEmpty()) {
@@ -277,7 +291,7 @@ public final class RecipeRemover {
     }
 
     private static boolean isSkippedKey(String key) {
-        return "type".equals(key) || "result".equals(key) || "results".equals(key);
+        return "type".equals(key) || "result".equals(key) || "results".equals(key) || "output".equals(key) || "outputs".equals(key);
     }
 
     private static boolean containsAny(JsonElement element, Set<String> literals, Set<String> tags) {
