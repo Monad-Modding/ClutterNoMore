@@ -5,7 +5,9 @@ import dev.tazer.clutternomore.platform.Services;
 import dev.tazer.clutternomore.recipe.RecipeFixes;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
+//? if <26.3 {
 import net.minecraft.server.packs.VanillaPackResources;
+//?}
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -46,9 +48,19 @@ public final class RuntimePack {
     }
 
     private static int insertionIndex(List<PackResources> packs) {
+        //? if >=26.3 {
+        /*int index = 0;
+        for (int i = 0; i < packs.size(); i++) {
+            if (packs.get(i).packId().equals("vanilla")) {
+                index = i + 1;
+            }
+        }
+        return index;
+        *///?} else {
         for (int i = 0; i < packs.size(); i++) {
             if (packs.get(i) instanceof VanillaPackResources) return i + 1;
         }
         return 0;
+        //?}
     }
 }
