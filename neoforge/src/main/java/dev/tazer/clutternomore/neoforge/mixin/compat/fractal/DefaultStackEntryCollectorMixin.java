@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.neoforge.mixin.compat.fractal;
 
 import de.dafuqs.fractal.api.DefaultStackEntryCollector;
 import dev.tazer.clutternomore.platform.condition.IfModPresent;
-import dev.tazer.clutternomore.shape.ShapeHooks;
+import dev.tazer.clutternomore.shape.ShapeMap;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -19,14 +19,14 @@ public abstract class DefaultStackEntryCollectorMixin {
 
     @Inject(method = "accept(Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/item/CreativeModeTab$TabVisibility;)V", at = @At("HEAD"), cancellable = true)
     private void cnm$hideShapeItem(ItemLike item, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (ShapeHooks.denyItem(item.asItem())) {
+        if (ShapeMap.isShape(item.asItem())) {
             ci.cancel();
         }
     }
 
     @Inject(method = "accept(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/CreativeModeTab$TabVisibility;)V", at = @At("HEAD"), cancellable = true)
     private void cnm$hideShapeStack(ItemStack stack, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (ShapeHooks.denyItem(stack.getItem())) {
+        if (ShapeMap.isShape(stack.getItem())) {
             ci.cancel();
         }
     }

@@ -30,7 +30,5 @@
     "minecraft": "${fabric_minecraft}",
     "java": ">=${java}"
   },
-  "breaks": {
-    "rrv": "<8.2.0"
-  }
+  "breaks": ${fabric_breaks}
 }

@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore.forge.mixin;
 
-import dev.tazer.clutternomore.shape.ShapeHooks;
+import dev.tazer.clutternomore.shape.ShapeMap;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -17,14 +17,14 @@ public abstract class FabricItemGroupEntriesMixin {
 
     @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
     private void cnm$hideShapes(ItemStack stack, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (ShapeHooks.denyItem(stack.getItem())) {
+        if (ShapeMap.isShape(stack.getItem())) {
             ci.cancel();
         }
     }
 
     @Inject(method = "isEnabled", remap = false, at = @At("RETURN"), cancellable = true)
     private void cnm$disableShapes(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if (ShapeHooks.denyItem(stack.getItem())) {
+        if (ShapeMap.isShape(stack.getItem())) {
             cir.setReturnValue(false);
         }
     }

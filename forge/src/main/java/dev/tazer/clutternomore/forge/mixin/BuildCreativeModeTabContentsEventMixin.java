@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore.forge.mixin;
 
-import dev.tazer.clutternomore.shape.ShapeHooks;
+import dev.tazer.clutternomore.shape.ShapeMap;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -14,7 +14,7 @@ public abstract class BuildCreativeModeTabContentsEventMixin {
 
     @Inject(method = "accept*", at = @At("HEAD"), cancellable = true)
     private void cnm$hideShapes(ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (ShapeHooks.denyItem(newEntry.getItem())) {
+        if (ShapeMap.isShape(newEntry.getItem())) {
             ci.cancel();
         }
     }

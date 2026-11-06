@@ -25,3 +25,4 @@ mandatory = true
 versionRange = "${forge_minecraft}"
 ordering = "NONE"
 side = "BOTH"
+${optional_dependencies}

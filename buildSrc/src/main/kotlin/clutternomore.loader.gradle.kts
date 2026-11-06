@@ -50,6 +50,8 @@ val metadata: Map<String, String> = mapOf(
     "forge_minecraft" to (versionedOrNull("forge_minecraft") ?: ""),
     "forge_loader" to (versionedOrNull("forge_loader") ?: ""),
     "mixin_plugin" to "${mod("group")}.$platform.${loaderClassPrefix}MixinPlugin",
+    "optional_dependencies" to optionalDependencies(mod("id")),
+    "fabric_breaks" to fabricBreaks,
 )
 
 tasks.named<JavaCompile>("compileJava") {
@@ -106,6 +108,7 @@ publishMods {
         if (platform == "fabric") {
             requires("fabric-api")
         }
+        optionalMods.forEach { mod -> mod.slug?.let { optional(it) } }
     }
 
     curseforge {
@@ -118,6 +121,7 @@ publishMods {
         if (platform == "fabric") {
             requires("fabric-api")
         }
+        optionalMods.forEach { mod -> mod.curseforgeSlug?.let { optional(it) } }
     }
 }
 

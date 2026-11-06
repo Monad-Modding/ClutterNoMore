@@ -85,6 +85,38 @@ fun pruneMixinConfig(config: File, classesDirs: Iterable<File>, refmap: String?)
     config.writeText(JsonOutput.prettyPrint(JsonOutput.toJson(json)) + "\n")
 }
 
+data class OptionalMod(val id: String, val slug: String?, val curseforgeSlug: String?, val minimum: String, val below: String, val clientOnly: Boolean)
+
+val Project.optionalMods: List<OptionalMod>
+    get() = versionedOrNull("optional.$platform")?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() }?.map { entry ->
+        val words = entry.split(Regex("\\s+"))
+        val clientOnly = words.last() == "client"
+        val fields = if (clientOnly) words.dropLast(1) else words
+        val usage = "Optional mod entry '$entry' must be '<mod id>[/-] <minimum> <below> [client]', '-/<mod id> <minimum> <below> [client]' or '<mod id> <slug>[/<curseforge slug>] <minimum> <below> [client]', with '-' for a site the mod is not on"
+        when (fields.size) {
+            3 -> {
+                val sites = fields[0].split("/")
+                require(sites.size == 1 || sites.size == 2 && (sites[0] == "-") != (sites[1] == "-")) { usage }
+                val id = sites.first { it != "-" }
+                OptionalMod(id, id.takeIf { sites[0] != "-" }, id.takeIf { sites.getOrElse(1) { id } != "-" }, fields[1], fields[2], clientOnly)
+            }
+            4 -> {
+                val slugs = fields[1].split("/")
+                val curseforge = slugs.getOrElse(1) { slugs[0] }
+                OptionalMod(fields[0], slugs[0].takeIf { it != "-" }, curseforge.takeIf { it != "-" }, fields[2], fields[3], clientOnly)
+            }
+            else -> throw IllegalArgumentException(usage)
+        }
+    } ?: emptyList()
+
+fun Project.optionalDependencies(modId: String): String = optionalMods.joinToString("") { mod ->
+    val requirement = if (platform == "forge") "mandatory = false" else "type = \"optional\""
+    "\n[[dependencies.$modId]]\nmodId = \"${mod.id}\"\n$requirement\nversionRange = \"[${mod.minimum},${mod.below})\"\nordering = \"NONE\"\nside = \"${if (mod.clientOnly) "CLIENT" else "BOTH"}\"\n"
+}
+
+val Project.fabricBreaks: String
+    get() = JsonOutput.toJson(optionalMods.associate { mod -> mod.id to listOf("<${mod.minimum}", ">=${mod.below}") })
+
 val commonContent: org.gradle.api.attributes.Attribute<String> =
     org.gradle.api.attributes.Attribute.of("dev.tazer.clutternomore.common", String::class.java)
 

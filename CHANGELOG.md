@@ -1,4 +1,6 @@
-- Fixed crash with JEI, again.
-- Added files to define rotateable vertical slabs under `assets/modid/rotateable_vertical_slabs/`
-- Updated recipe handling
-- Fixed incorrect recipe overrides in 26.3
+- Fixed crash with JEI, again again.
+- Domum Ornamentum compat
+- Fixed possible dupe bug with block entity shapes
+- Separated Twilight Forest mangrove from regular mangrove
+- Improved wood grouping
+- Added support for differently-named blocks like `stairs_x`

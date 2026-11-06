@@ -31,3 +31,4 @@ type = "required"
 versionRange = "${neoforge_minecraft}"
 ordering = "NONE"
 side = "BOTH"
+${optional_dependencies}
