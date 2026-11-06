@@ -10,11 +10,13 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -188,5 +190,10 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     /*public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
     *///?}
         return type == PathComputationType.WATER && state.getFluidState().is(FluidTags.WATER);
+    }
+
+    public static boolean isDoubled(BlockState state) {
+        if (state.getOptionalValue(SlabBlock.TYPE).orElse(null) == SlabType.DOUBLE) return true;
+        return state.getOptionalValue(DOUBLE).orElse(false);
     }
 }

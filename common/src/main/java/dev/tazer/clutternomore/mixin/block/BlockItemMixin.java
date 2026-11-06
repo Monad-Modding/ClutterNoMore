@@ -3,7 +3,7 @@ package dev.tazer.clutternomore.mixin.block;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.tazer.clutternomore.shape.ShapeHooks;
+import dev.tazer.clutternomore.block.VerticalSlabBlock;
 import dev.tazer.clutternomore.shape.ShapeMap;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +34,6 @@ public class BlockItemMixin {
     *///?}
 
     private static boolean cnm$consumes(ItemStack stack, BlockState placed) {
-        return !ShapeMap.isShape(stack.getItem()) || !ShapeHooks.isDoubled(placed);
+        return !ShapeMap.isShape(stack.getItem()) || !VerticalSlabBlock.isDoubled(placed);
     }
 }
