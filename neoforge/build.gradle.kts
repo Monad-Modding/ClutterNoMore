@@ -42,5 +42,6 @@ dependencies {
     compileOnly("maven.modrinth:fractal-lib:${integration("fractal")}")
     integration("create")?.let { compileOnly("com.simibubi.create:create-$mcVersion:$it:slim") { isTransitive = false } }
     integration("item_group_api")?.let { compileOnly("org.sinytra.forgified-fabric-api:fabric-item-group-api-v1:$it") { isTransitive = false } }
+    integration("domum_ornamentum")?.let { compileOnly("com.ldtteam:domum-ornamentum:$it") { isTransitive = false } }
     integration("creative_tab_api")?.let { compileOnly("net.fabricmc.fabric-api:fabric-creative-tab-api-v1:$it") { isTransitive = false } }
 }

@@ -82,6 +82,19 @@ repositories {
     }
     exclusiveContent {
         forRepository {
+            maven("https://ldtteam.jfrog.io/artifactory/modding") {
+                name = "LDTTeam"
+                metadataSources {
+                    mavenPom()
+                    artifact()
+                    ignoreGradleMetadataRedirection()
+                }
+            }
+        }
+        filter { includeGroup("com.ldtteam") }
+    }
+    exclusiveContent {
+        forRepository {
             maven("https://maven.su5ed.dev/releases") { name = "Sinytra" }
         }
         filter {

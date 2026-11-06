@@ -14,6 +14,10 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.network.PacketDistributor;
+//? if <26 {
+import dev.tazer.clutternomore.neoforge.compat.DomumOrnamentumCompat;
+import net.minecraft.world.item.ItemStack;
+//?}
 //? if >=26 {
 /*import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeMap;
@@ -26,6 +30,10 @@ import java.nio.file.Path;
 *///?}
 
 public final class NeoForgePlatform implements Platform {
+
+    //? if <26 {
+    private final boolean domumOrnamentum = ModList.get().isLoaded("domum_ornamentum");
+    //?}
 
     @Override
     public String getName() {
@@ -45,6 +53,15 @@ public final class NeoForgePlatform implements Platform {
         return FMLEnvironment.dist.isClient();
         //?}
     }
+
+    //? if <26 {
+    @Override
+    public void afterShapeTransfer(ItemStack from, ItemStack to) {
+        if (this.domumOrnamentum) {
+            DomumOrnamentumCompat.remap(from, to);
+        }
+    }
+    //?}
 
     @Override
     public Path getGameDirectory() {

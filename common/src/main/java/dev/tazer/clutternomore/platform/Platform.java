@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WeatheringCopper;
@@ -40,6 +41,9 @@ public interface Platform {
     void afterShapeRegistration();
 
     default void generateServerData(ResourceManager manager) {
+    }
+
+    default void afterShapeTransfer(ItemStack from, ItemStack to) {
     }
 
     default Optional<Block> getNextOxidation(Block block) {

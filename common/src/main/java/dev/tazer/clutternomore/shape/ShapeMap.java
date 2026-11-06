@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.shape;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.network.ClutterNoMoreNetwork;
 import dev.tazer.clutternomore.network.ShapeMapSync;
+import dev.tazer.clutternomore.platform.Services;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 //? if >=26 {
 /*import dev.tazer.clutternomore.compat.RrvCompat;
-import dev.tazer.clutternomore.platform.Services;
 import net.minecraft.world.item.ItemStackTemplate;
 *///?}
 //? if <1.20.5 {
@@ -129,15 +129,16 @@ public final class ShapeMap {
         if (index < 0 || index >= shapes.size()) return stack.copy();
         Item target = shapes.get(index);
         //? if >=1.20.5 {
-        return stack.transmuteCopy(target, stack.getCount());
+        ItemStack result = stack.transmuteCopy(target, stack.getCount());
         //?} else {
         /*ItemStack result = new ItemStack(target, stack.getCount());
         CompoundTag tag = stack.getTag();
         if (tag != null) {
             result.setTag(tag.copy());
         }
-        return result;
         *///?}
+        Services.PLATFORM.afterShapeTransfer(stack, result);
+        return result;
     }
 
     public static boolean isUnchanged(ItemStack before, ItemStack after) {
