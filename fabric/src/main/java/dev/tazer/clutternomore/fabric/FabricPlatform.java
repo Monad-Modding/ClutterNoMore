@@ -5,6 +5,7 @@ import dev.tazer.clutternomore.platform.Platform;
 import dev.tazer.clutternomore.registry.ShapeBlocks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.event.registry.FabricRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -57,6 +58,11 @@ public final class FabricPlatform implements Platform {
     @Override
     public <T> void register(Registry<T> registry, ResourceLocation id, T value) {
         Registry.register(registry, id, value);
+    }
+
+    @Override
+    public <T> void alias(Registry<T> registry, ResourceLocation from, ResourceLocation to) {
+        ((FabricRegistry) registry).addAlias(from, to);
     }
 
     @Override

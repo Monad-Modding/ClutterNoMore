@@ -35,6 +35,10 @@ import java.util.function.Function;
 
 public final class ShapeBlocks {
 
+    private static final String SLAB_PREFIX = "slab_";
+    private static final String STAIRS_PREFIX = "stairs_";
+    private static final String STAIR_PREFIX = "stair_";
+
     private static final BiMap<Block, Block> NEXT_OXIDATION = HashBiMap.create();
     private static final BiMap<Block, Block> WAXED_BLOCKS = HashBiMap.create();
     private static final List<String> SHAPE_PATHS = new ArrayList<>();
@@ -129,18 +133,53 @@ public final class ShapeBlocks {
     }
 
     public static ResourceLocation verticalSlabOf(ResourceLocation slab) {
-        return ClutterNoMore.id(shapePrefix(slab) + "vertical_" + slab.getPath());
+        String path = slab.getPath();
+        String named = path.startsWith(SLAB_PREFIX) ? path.substring(SLAB_PREFIX.length()) + "_slab" : path;
+        return ClutterNoMore.id(shapePrefix(slab) + "vertical_" + named);
     }
 
     public static ResourceLocation stepOf(ResourceLocation stairs) {
+        String stem = prefixedStairStem(stairs.getPath());
+        if (stem != null) return ClutterNoMore.id(shapePrefix(stairs) + stem + "_step");
         return ClutterNoMore.id(shapePrefix(stairs) + stairs.getPath().replace("stairs", "step"));
     }
 
     public static ResourceLocation verticalStairsOf(ResourceLocation stairs) {
+        String stem = prefixedStairStem(stairs.getPath());
+        if (stem != null) return ClutterNoMore.id(shapePrefix(stairs) + "vertical_" + stem + "_stairs");
         return ClutterNoMore.id(shapePrefix(stairs) + "vertical_" + stairs.getPath());
     }
 
+    @Nullable
+    private static String legacyPathOf(ShapeType type, ResourceLocation source) {
+        String path = source.getPath();
+        String legacy = switch (type) {
+            case VERTICAL_SLAB -> path.startsWith(SLAB_PREFIX) ? "vertical_" + path : null;
+            case STEP -> prefixedStairStem(path) != null ? path.replace("stairs", "step") : null;
+            case VERTICAL_STAIRS -> prefixedStairStem(path) != null ? "vertical_" + path : null;
+            case VERTICAL_STEP -> prefixedStairStem(path) != null ? "vertical_" + legacyStepPath(path) : null;
+        };
+        return legacy == null ? null : shapePrefix(source) + legacy;
+    }
+
+    private static String legacyStepPath(String path) {
+        String step = path.replace("stairs", "step");
+        if (step.equals(path)) {
+            step = path.replace("stair", "step");
+        }
+        return step.equals(path) ? path + "_step" : step;
+    }
+
+    @Nullable
+    private static String prefixedStairStem(String path) {
+        if (path.startsWith(STAIRS_PREFIX)) return path.substring(STAIRS_PREFIX.length());
+        if (path.startsWith(STAIR_PREFIX)) return path.substring(STAIR_PREFIX.length());
+        return null;
+    }
+
     public static ResourceLocation verticalStepOf(ResourceLocation stairs) {
+        String prefixed = prefixedStairStem(stairs.getPath());
+        if (prefixed != null) return ClutterNoMore.id(shapePrefix(stairs) + "vertical_" + prefixed + "_step");
         String path = stairs.getPath();
         String step = path.replace("stairs", "step");
         if (step.equals(path)) {
@@ -165,6 +204,7 @@ public final class ShapeBlocks {
         Map<String, Function<BlockBehaviour.Properties, Block>> pending = new LinkedHashMap<>();
         Map<String, BlockItem> parents = new LinkedHashMap<>();
         Map<String, ShapeType> pendingTypes = new LinkedHashMap<>();
+        Map<String, String> legacies = new LinkedHashMap<>();
         List<Map.Entry<ResourceKey<Item>, Item>> items = new ArrayList<>(BuiltInRegistries.ITEM.entrySet());
         items.sort(Comparator.comparing(entry -> entry.getKey().location()));
         for (Map.Entry<ResourceKey<Item>, Item> entry : items) {
@@ -178,6 +218,10 @@ public final class ShapeBlocks {
                     continue;
                 }
                 String path = type.idOf(parentId).getPath();
+                String legacy = legacyPathOf(type, parentId);
+                if (legacy != null && !legacy.equals(path)) {
+                    legacies.put(path, legacy);
+                }
                 pending.put(path, type.factory(block));
                 parents.put(path, blockItem);
                 pendingTypes.put(path, type);
@@ -186,6 +230,11 @@ public final class ShapeBlocks {
         }
         for (Map.Entry<String, Function<BlockBehaviour.Properties, Block>> entry : pending.entrySet()) {
             register(entry.getKey(), entry.getValue(), parents.get(entry.getKey()), pendingTypes.get(entry.getKey()));
+            String legacy = legacies.get(entry.getKey());
+            if (legacy != null) {
+                Services.PLATFORM.alias(BuiltInRegistries.BLOCK, ClutterNoMore.id(legacy), ClutterNoMore.id(entry.getKey()));
+                Services.PLATFORM.alias(BuiltInRegistries.ITEM, ClutterNoMore.id(legacy), ClutterNoMore.id(entry.getKey()));
+            }
         }
         SHAPE_PATHS.addAll(pending.keySet());
         resolveCopper();

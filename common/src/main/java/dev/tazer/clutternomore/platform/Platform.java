@@ -36,6 +36,8 @@ public interface Platform {
 
     <T> void register(Registry<T> registry, ResourceLocation id, T value);
 
+    <T> void alias(Registry<T> registry, ResourceLocation from, ResourceLocation to);
+
     void beforeShapeRegistration();
 
     void afterShapeRegistration();

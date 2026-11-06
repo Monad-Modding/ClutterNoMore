@@ -1,16 +1,100 @@
 {
   "priority": 500,
   "add": {
-    "/(?<ns>[^:]+):(?<wood>.+)_log/": [
-      "${ns}:${wood}_wood",
-      "wilderwild:hollowed_${wood}_log",
-      "quark:hollow_${wood}_log",
-      "everycomp:q/${ns}/hollow_${wood}_log"
-    ],
+    "/(?<ns>[^:]+):(?<wood>.+)_log/": {
+      "shapes": [
+        "${ns}:${wood}_wood",
+        "everycomp:q/${ns}/hollow_${wood}_log"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:${wood}_planks"] },
+          { "exists": ["${ns}:stripped_${wood}_log"] }
+        ]
+      }
+    },
 
-    "/(?<ns>[^:]+):(?<wood>.*wood.*)_log/": [
-      "${ns}:${wood}"
-    ],
+    "/(?<ns>[^:]+):stripped_(?<wood>.+)_log/": {
+      "shapes": [
+        "${ns}:stripped_${wood}_wood"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:${wood}_planks"] },
+          { "exists": ["${ns}:${wood}_log"] }
+        ]
+      }
+    },
+
+    "/(?<ns>minecraft|quark):(?<wood>.+)_log/": {
+      "shapes": [
+        "quark:hollow_${wood}_log"
+      ],
+      "conditions": {
+        "exists": ["${ns}:${wood}_planks"]
+      }
+    },
+
+    "/(?<ns>minecraft|wilderwild):(?<wood>.+)_log/": {
+      "shapes": [
+        "wilderwild:hollowed_${wood}_log"
+      ],
+      "conditions": {
+        "exists": ["${ns}:${wood}_planks"]
+      }
+    },
+
+    "/(?<ns>[^:]+):(?<wood>.*wood.*)_log/": {
+      "shapes": [
+        "${ns}:${wood}"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:${wood}_planks"] },
+          { "exists": ["${ns}:stripped_${wood}_log"] }
+        ]
+      }
+    },
+
+    "/(?<ns>[^:]+):log_(?<wood>.+)/": {
+      "shapes": [
+        "${ns}:${wood}",
+        "everycomp:q/${ns}/hollow_${wood}_log"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:plank_${wood}"] },
+          { "exists": ["${ns}:planks_${wood}"] },
+          { "exists": ["${ns}:stripped_log_${wood}"] }
+        ]
+      }
+    },
+
+    "/(?<ns>[^:]+):stripped_log_(?<wood>.+)/": {
+      "shapes": [
+        "${ns}:stripped_${wood}"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:plank_${wood}"] },
+          { "exists": ["${ns}:planks_${wood}"] },
+          { "exists": ["${ns}:log_${wood}"] }
+        ]
+      }
+    },
+
+    "/(?<ns>[^:]+):planks?_(?<stem>.+)/": {
+      "shapes": [
+        "${ns}:slab_${stem}",
+        "${ns}:stairs_${stem}",
+        "${ns}:stair_${stem}",
+        "${ns}:wall_${stem}",
+        "${ns}:spiked_${stem}"
+      ],
+      "conditions": {
+        "is_blockitem": true
+      }
+    },
 
     "/(?<ns>[^:]+):(?<stem>.+?)_planks/": {
       "shapes": [
@@ -112,6 +196,13 @@
       "${ns}:${stem}_vertical_slab"
     ],
 
+    "/(?!minecraft:)(?<ns>[^:]+):slab_(?<stem>.+)/": [
+      "clutternomore:${ns}/vertical_${stem}_slab",
+      "${ns}:vertical_slab_${stem}",
+      "${ns}:vertical_${stem}_slab",
+      "${ns}:${stem}_vertical_slab"
+    ],
+
     "/minecraft:(?<stem>.+)_stair(?<s>s|)/": [
       "clutternomore:${stem}_step",
       "clutternomore:vertical_${stem}_stair${s}",
@@ -125,13 +216,45 @@
       "clutternomore:${ns}/vertical_${stem}_step"
     ],
 
-    "/(?<ns>[^:]+):(?<wood>.+)_stem/": [
-      "${ns}:${wood}_hyphae",
-      "quark:hollow_${wood}_stem",
-      "wilderwild:hollowed_${wood}_stem",
-      "everycomp:q/${ns}/hollow_${wood}_stem",
-      "everycomp:q/${ns}/hollow_${wood}_log"
-    ]
+    "/(?!minecraft:)(?<ns>[^:]+):stairs?_(?<stem>.+)/": [
+      "clutternomore:${ns}/${stem}_step",
+      "${ns}:step_${stem}",
+      "${ns}:${stem}_step",
+      "clutternomore:${ns}/vertical_${stem}_stairs",
+      "clutternomore:${ns}/vertical_${stem}_step"
+    ],
+
+    "/(?<ns>[^:]+):(?<wood>.+)_stem/": {
+      "shapes": [
+        "${ns}:${wood}_hyphae",
+        "everycomp:q/${ns}/hollow_${wood}_stem",
+        "everycomp:q/${ns}/hollow_${wood}_log"
+      ],
+      "conditions": {
+        "any_of": [
+          { "exists": ["${ns}:${wood}_planks"] },
+          { "exists": ["${ns}:${wood}_hyphae"] }
+        ]
+      }
+    },
+
+    "/(?<ns>minecraft|quark):(?<wood>.+)_stem/": {
+      "shapes": [
+        "quark:hollow_${wood}_stem"
+      ],
+      "conditions": {
+        "exists": ["${ns}:${wood}_planks"]
+      }
+    },
+
+    "/(?<ns>minecraft|wilderwild):(?<wood>.+)_stem/": {
+      "shapes": [
+        "wilderwild:hollowed_${wood}_stem"
+      ],
+      "conditions": {
+        "exists": ["${ns}:${wood}_planks"]
+      }
+    }
   },
 
   "remove": {

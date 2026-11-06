@@ -79,6 +79,11 @@ public final class NeoForgePlatform implements Platform {
     }
 
     @Override
+    public <T> void alias(Registry<T> registry, ResourceLocation from, ResourceLocation to) {
+        registry.addAlias(from, to);
+    }
+
+    @Override
     public void beforeShapeRegistration() {
     }
 

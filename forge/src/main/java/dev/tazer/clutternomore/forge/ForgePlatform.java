@@ -57,6 +57,11 @@ public final class ForgePlatform implements Platform {
     }
 
     @Override
+    public <T> void alias(Registry<T> registry, ResourceLocation from, ResourceLocation to) {
+        RegistryManager.ACTIVE.getRegistry(registry.key()).addAlias(from, to);
+    }
+
+    @Override
     public void beforeShapeRegistration() {
         RegistryManager.ACTIVE.getRegistry(Registries.BLOCK).unfreeze();
         RegistryManager.ACTIVE.getRegistry(Registries.ITEM).unfreeze();

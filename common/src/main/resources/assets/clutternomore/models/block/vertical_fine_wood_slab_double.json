@@ -1,8 +1,0 @@
-{
-  "parent": "clutternomore:block/templates/vertical_slab_double",
-  "textures": {
-    "top": "supplementaries:block/cabin_siding_end",
-    "side": "supplementaries:block/cabin_siding_side",
-    "bottom": "supplementaries:block/cabin_siding_end"
-  }
-}
