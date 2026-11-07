@@ -17,6 +17,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 //? if <26 {
 import dev.tazer.clutternomore.neoforge.compat.DomumOrnamentumCompat;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.loading.LoadingModList;
 //?}
 //? if >=26 {
 /*import net.minecraft.world.item.crafting.RecipeHolder;
@@ -32,7 +33,7 @@ import java.nio.file.Path;
 public final class NeoForgePlatform implements Platform {
 
     //? if <26 {
-    private final boolean domumOrnamentum = ModList.get().isLoaded("domum_ornamentum");
+    private final boolean domumOrnamentum = this.isModLoaded("domum_ornamentum");
     //?}
 
     @Override
@@ -42,6 +43,9 @@ public final class NeoForgePlatform implements Platform {
 
     @Override
     public boolean isModLoaded(String id) {
+        //? if <26 {
+        if (ModList.get() == null) return LoadingModList.get().getModFileById(id) != null;
+        //?}
         return ModList.get().isLoaded(id);
     }
 

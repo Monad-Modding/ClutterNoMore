@@ -1,6 +1,1 @@
-- Fixed crash with JEI, again again.
-- Domum Ornamentum compat
-- Fixed possible dupe bug with block entity shapes
-- Separated Twilight Forest mangrove from regular mangrove
-- Improved wood grouping
-- Added support for differently-named blocks like `stairs_x`
+- Fix NeoForge crash
